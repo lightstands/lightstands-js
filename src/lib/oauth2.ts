@@ -1,5 +1,5 @@
 import { Oauth2Service, OpenAPI } from "./internal"
-import { getAccessTokenByRefreshToken } from "./session"
+import { getAccessTokenByRefreshToken } from "./sessions"
 import {ClientConfig, Session} from "./types"
 
 export type OAuth2AuthorizationCodeFlowRequest = {

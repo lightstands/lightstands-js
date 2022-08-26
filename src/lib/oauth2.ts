@@ -36,7 +36,7 @@ export async function completeAuthorizationCodeFlow(client: ClientConfig, redire
   })
   const tokObject = await getAccessTokenByRefreshToken(client, response.refresh_token)
   if (tokObject === null) {
-    throw new BadStateError("Token lost just after oauth code exchaing")
+    throw new BadStateError("Token lost just after oauth 2 code exchaning")
   }
   return <Session>{
     accessToken: response.access_token,

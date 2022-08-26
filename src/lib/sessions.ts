@@ -1,7 +1,7 @@
 import { ApiError, OpenAPI, SessionsService } from "./internal";
 import { AccessToken, ClientConfig } from "./types";
 
-export async function getAccessTokenByRefreshToken(client: ClientConfig, refreshToken: string): Promise<AccessToken | null> {
+export async function tokenDetailByRefTok(client: ClientConfig, refreshToken: string): Promise<AccessToken | null> {
   OpenAPI.BASE = client.endpointBase
   try {
     const response = await SessionsService.getAccessTokenByRefreshTokenAccessTokensSpecificRefTokGet(refreshToken)

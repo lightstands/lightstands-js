@@ -1,5 +1,5 @@
 import { Oauth2Service, OpenAPI } from "./internal"
-import { getAccessTokenByRefreshToken } from "./sessions"
+import { tokenDetailByRefTok } from "./sessions"
 import {ClientConfig, Session} from "./types"
 
 export type OAuth2AuthorizationCodeFlowRequest = {
@@ -34,7 +34,7 @@ export async function completeAuthorizationCodeFlow(client: ClientConfig, redire
     client_id: client.clientId,
     client_secret: client.clientSecret ?? undefined,
   })
-  const tokObject = await getAccessTokenByRefreshToken(client, response.refresh_token)
+  const tokObject = await tokenDetailByRefTok(client, response.refresh_token)
   if (tokObject === null) {
     throw new BadStateError("Token lost just after oauth 2 code exchaning")
   }

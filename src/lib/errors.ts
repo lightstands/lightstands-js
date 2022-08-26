@@ -1,0 +1,2 @@
+
+class BadStateError extends Error {}

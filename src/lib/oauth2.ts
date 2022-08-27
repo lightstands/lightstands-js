@@ -1,7 +1,9 @@
-import { BadStateError } from "./errors"
+import { BadStateError, OAuth2Error } from "./errors"
+import { Fork, isRight, Left, Right, unboxLeft, unboxRight, unwrap } from "./fpcore"
 import { Oauth2Service, OpenAPI } from "./internal"
 import { tokenDetailByRefTok } from "./sessions"
 import {ClientConfig, Session} from "./types"
+import { parseOAuth2Error, wrapOpenAPI } from "./utils"
 
 export type OAuth2AuthorizationCodeFlowRequest = {
   readonly redirect_uri: string
@@ -33,22 +35,27 @@ export function getAuthorizationUrlForAuthorizationCodeFlow(client: ClientConfig
  * @param code the authorization code
  * @returns a session object
  */
-export async function completeAuthorizationCodeFlow(client: ClientConfig, redirect_uri: string, code_verifier: string, code: string): Promise<Session> {
+export async function completeAuthorizationCodeFlow(client: ClientConfig, redirect_uri: string, code_verifier: string, code: string): Fork<OAuth2Error, Session> {
   OpenAPI.BASE = client.endpointBase
-  const response = await Oauth2Service.oauth2ExchangeAccessTokenOauth2TokenPost({
+  const result = await wrapOpenAPI(Oauth2Service.oauth2ExchangeAccessTokenOauth2TokenPost({
     grant_type: "authorization_code",
     code,
     redirect_uri,
     code_verifier,
     client_id: client.clientId,
     client_secret: client.clientSecret ?? undefined,
-  })
-  const tokObject = await tokenDetailByRefTok(client, response.refresh_token)
-  if (tokObject === null) {
-    throw new BadStateError("Token lost just after oauth 2 code exchaning")
-  }
-  return <Session>{
-    accessToken: response.access_token,
-    accessTokenObject: tokObject,
+  }))
+  if (isRight(result)) {
+    const response = unboxRight(result)
+    const tokObject = await tokenDetailByRefTok(client, response.refresh_token)
+    if (tokObject === null) {
+      throw new BadStateError("Token lost just after oauth 2 code exchaning")
+    }
+    return Right(<Session>{
+      accessToken: response.access_token,
+      accessTokenObject: tokObject,
+    })
+  } else {
+    return Left(unwrap(parseOAuth2Error(unboxLeft(result))))
   }
 }

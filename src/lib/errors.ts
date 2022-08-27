@@ -22,3 +22,14 @@ export type AllRemoteErrors = {
   readonly bot?: string
   readonly captcharequired?: string
 }
+
+export const ERROR_KEYS = [
+  "bot",
+  "captcharequired"
+]
+
+export type OAuth2Error = {
+  readonly error: string
+  readonly error_url?: string
+  readonly error_description: string
+}

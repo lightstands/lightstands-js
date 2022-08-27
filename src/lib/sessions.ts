@@ -1,22 +1,15 @@
+import { AllRemoteErrors } from "./errors";
+import { either, Fork, unwrap } from "./fpcore";
 import { ApiError, OpenAPI, SessionsService } from "./internal";
-import { AccessToken, ClientConfig } from "./types";
+import { AccessToken, ClientConfig, Session, UserAgent } from "./types";
+import { internalAccessTokenAdaptor, parseLightStandsError, wrapOpenAPI } from "./utils";
 
 export async function tokenDetailByRefTok(client: ClientConfig, refreshToken: string): Promise<AccessToken | null> {
   OpenAPI.BASE = client.endpointBase
   try {
     const response = await SessionsService.getAccessTokenByRefreshTokenAccessTokensSpecificRefTokGet(refreshToken)
     const remoteTokObj = response.access_token
-    return <AccessToken>{
-      userid: remoteTokObj.userid,
-      refreshToken: remoteTokObj.refresh_token,
-      expiredAt: Date.parse(remoteTokObj.expired_at),
-      createdAt: Date.parse(remoteTokObj.created_at),
-      active: remoteTokObj.active,
-      appid: remoteTokObj.appid,
-      scope: remoteTokObj.scope,
-      updatedAt: Date.parse(remoteTokObj.updated_at),
-      userAgent: remoteTokObj.user_agent,
-    }
+    return internalAccessTokenAdaptor(remoteTokObj)
   } catch (e: unknown) {
     if (e instanceof ApiError) {
       if (e.status == 404) {
@@ -28,4 +21,27 @@ export async function tokenDetailByRefTok(client: ClientConfig, refreshToken: st
       throw e
     }
   }
+}
+
+export async function newSession(client: ClientConfig, session: Session, scope: string, userAgentId?: string, userAgent?: UserAgent, authCode?: string): Fork<AllRemoteErrors, Session> {
+  OpenAPI.BASE = client.endpointBase
+  OpenAPI.TOKEN = session.accessToken
+  const result = await wrapOpenAPI(SessionsService.createAccessTokenAccessTokensCreatePost({
+    clientid: client.clientId,
+    scope,
+    user_agent_id: userAgentId,
+    auth_code: authCode,
+    user_agent: userAgent,
+  }))
+  return either({
+    left: (err) => {
+      return unwrap(parseLightStandsError(err))
+    },
+    right: (val) => {
+      return <Session>{
+        accessToken: val.access_token.token,
+        accessTokenObject: internalAccessTokenAdaptor(val.access_token)
+      }
+    },
+  }, result)
 }

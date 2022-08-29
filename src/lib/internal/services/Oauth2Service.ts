@@ -16,7 +16,7 @@ export class Oauth2Service {
      *
      * `ua_id` is the user agent identity, a string can be hopefully unique to other user agent.
      * LightStands APIs will try to assign same session for same user agent identity,
-     * which can help to aganist some browsers that frequently removes the local storages.
+     * which can help to against some browsers that frequently removes the local storages.
      *
      * OAuth 2 PKCE extension is required for LightStands OAuth 2 process.
      *
@@ -72,6 +72,15 @@ export class Oauth2Service {
      * Exchange authorization code for access token.
      *
      * `client_secret` is required when the application have `client_secret`, otherwise the field will be ignored.
+     *
+     * HTTP status 400 will be returned for normal unexpected conditions:
+     * - `unsupported_grant_type`
+     * - `invalid_request`
+     * - `invalid_client`
+     * - `invalid_grant`: PKCE chanllenge failed
+     *
+     * HTTP status 401 will be returned if the request encounter an unrealiable state:
+     * - `invalid_client`: the application have been exists, but currently is unavaliable (deleted or wrong secret)
      * @param formData
      * @returns AuthorizationCodeResponse Successful Response
      * @throws ApiError

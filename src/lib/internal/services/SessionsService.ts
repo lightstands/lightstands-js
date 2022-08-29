@@ -117,7 +117,7 @@ export class SessionsService {
      *
      * Possible RPC errors:
      * - `conditionrequires(scope,access_token.scope)`
-     * - `notfound(clientid)`
+     * - `notfound(client_id)`
      * - `notfound(auth_code)`: the authorization code is not found or is expired.
      * @param requestBody
      * @returns AccessTokenCreated Successful Response

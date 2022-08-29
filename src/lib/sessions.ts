@@ -1,5 +1,5 @@
 import { AllRemoteErrors } from "./errors";
-import { either, Fork, unwrap } from "./fpcore";
+import { aeither, either, Fork, unwrap } from "./fpcore";
 import { ApiError, OpenAPI, SessionsService } from "./internal";
 import { AccessToken, ClientConfig, Session, UserAgent } from "./types";
 import { internalAccessTokenAdaptor, parseLightStandsError, wrapOpenAPI } from "./utils";
@@ -27,7 +27,7 @@ export async function newSession(client: ClientConfig, session: Session, scope: 
   OpenAPI.BASE = client.endpointBase
   OpenAPI.TOKEN = session.accessToken
   const result = await wrapOpenAPI(SessionsService.createAccessTokenAccessTokensCreatePost({
-    clientid: client.clientId,
+    client_id: client.clientId,
     scope,
     user_agent_id: userAgentId,
     auth_code: authCode,
@@ -44,4 +44,22 @@ export async function newSession(client: ClientConfig, session: Session, scope: 
       }
     },
   }, result)
+}
+
+export async function newSessionByPassword(client: ClientConfig, username: string, password: string, scope: string, userAgentId?: string, userAgent?: UserAgent): Fork<AllRemoteErrors, Session> {
+  OpenAPI.BASE = client.endpointBase
+  return aeither({
+      left: (v) => unwrap(parseLightStandsError(v)),
+      right: (v) => {
+        return <Session>{
+          accessToken: v.access_token.token,
+          accessTokenObject: internalAccessTokenAdaptor(v.access_token)
+        }
+      }
+    }, wrapOpenAPI(
+    SessionsService.createAccessTokenByPasswordAccessTokensCreateByPasswordPost({
+      client_id: client.clientId, username, password, scope,
+      user_agent_id:userAgentId, user_agent: userAgent
+    })
+  ))
 }

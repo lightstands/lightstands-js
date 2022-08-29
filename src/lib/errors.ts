@@ -13,8 +13,19 @@ export class BadResponseError extends Error {
   constructor(responseText: string, message?: string) {
     super(message)
 
-    this.message = "BadResponseError"
+    this.name = "BadResponseError"
     this.responseText = responseText
+  }
+}
+
+export class NotFoundError extends Error {
+  key?: string
+
+  constructor(key?: string, message?: string) {
+    super(message)
+
+    this.name = typeof key !== "undefined"? `NotFoundError(${key})`: "NotFoundError"
+    this.key = key
   }
 }
 

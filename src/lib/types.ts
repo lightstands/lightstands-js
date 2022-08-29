@@ -27,3 +27,14 @@ export type Session = {
   accessToken: string
   accessTokenObject: AccessToken
 }
+
+export type App = {
+  appid: number
+  name: string
+  ownerId?: number
+  clientId: string
+  scope: string
+  redirectUri?: string
+  createdAt: number
+  updatedAt: number
+}

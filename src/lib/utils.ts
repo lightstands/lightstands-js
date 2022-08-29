@@ -1,7 +1,7 @@
 import { AllRemoteErrors, BadResponseError, ERROR_KEYS, OAuth2Error } from "./errors";
 import { aeither, Either, filter, fold, Fork, Left, Right, wrap } from "./fpcore";
-import { ApiError, CancelablePromise, UserPrivateAccessTokenWithoutToken } from "./internal";
-import { AccessToken } from "./types";
+import { ApiError, CancelablePromise, PublicApplication, UserPrivateAccessTokenWithoutToken } from "./internal";
+import { AccessToken, App } from "./types";
 
 /**
  *
@@ -87,5 +87,18 @@ export function internalAccessTokenAdaptor(remoteTokObj: UserPrivateAccessTokenW
     scope: remoteTokObj.scope,
     updatedAt: Date.parse(remoteTokObj.updated_at),
     userAgent: remoteTokObj.user_agent,
+  }
+}
+
+export function internalAppAdapter(obj: PublicApplication): App {
+  return <App>{
+    appid: obj.appid,
+    name: obj.name,
+    ownerId: obj.owner_id,
+    clientId: obj.client_id,
+    scope: obj.scope,
+    redirectUri: obj.redirect_uri,
+    createdAt: Date.parse(obj.created_at),
+    updatedAt: Date.parse(obj.updated_at),
   }
 }

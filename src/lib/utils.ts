@@ -1,28 +1,8 @@
-import { AllRemoteErrors, BadResponseError, ERROR_KEYS, OAuth2Error } from "./errors";
+import { AllRemoteErrors, ERROR_KEYS, OAuth2Error } from "./errors";
 import { aeither, Either, filter, fold, Fork, Left, Right, wrap } from "./fpcore";
 import { ApiError, CancelablePromise, PublicApplication, UserPrivateAccessTokenWithoutToken } from "./internal";
 import { AccessToken, App } from "./types";
 
-/**
- *
- */
-export function ensureErrors(jsonBody: unknown): Either<(TypeError | BadResponseError), Record<string, unknown>> {
-  if (typeof jsonBody === "object" && jsonBody !== null) {
-    if (typeof (jsonBody as {errors: unknown}).errors === "object") {
-      const errors = (jsonBody as {errors: Record<string | number | symbol, unknown>}).errors;
-      for (const k in errors) {
-        if (typeof k !== "string") {
-          return Left(new TypeError(`expected string, got ${typeof k}`))
-        }
-      }
-      return Right(errors as Record<string, unknown>)
-    } else {
-      return Left(new BadResponseError(JSON.stringify(jsonBody), "could not found 'errors' object"))
-    }
-  } else {
-    return Left(new BadResponseError(JSON.stringify(jsonBody), "could not found 'errors' object"))
-  }
-}
 
 export function wrapOpenAPI<T>(original: CancelablePromise<T>): Fork<ApiError, T> {
   return aeither({

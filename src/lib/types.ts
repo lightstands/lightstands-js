@@ -24,17 +24,17 @@ export type AccessToken = {
 }
 
 export type Session = {
-  accessToken: string
-  accessTokenObject: AccessToken
+  readonly accessToken: string
+  readonly accessTokenObject: AccessToken
 }
 
 export type App = {
-  appid: number
-  name: string
-  ownerId?: number
-  clientId: string
-  scope: string
-  redirectUri?: string
-  createdAt: number
-  updatedAt: number
+  readonly appid: number
+  readonly name: string
+  readonly ownerId?: number
+  readonly clientId: string
+  readonly scope: string
+  readonly redirectUri?: string
+  readonly createdAt: number
+  readonly updatedAt: number
 }

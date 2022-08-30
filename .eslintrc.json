@@ -61,10 +61,12 @@
   "overrides": [
     {
       "files": [
-        "src/lib/internal/**/*.ts"
+        "src/lib/internal/**/*.ts",
+        "src/lib/internal/*.ts"
       ],
       "rules": {
-        "eslint-comments/no-unlimited-disable": "off"
+        "eslint-comments/no-unlimited-disable": "off",
+        "eslint-comments/no-unused-disable": "off"
       }
     },
     {
@@ -72,7 +74,8 @@
         "src/lib/errors.ts"
       ],
       "rules": {
-        "functional/no-class": "off"
+        "functional/no-class": "off",
+        "functional/no-this-expression": "off"
       }
     },
     {
@@ -89,7 +92,8 @@
       ],
       "rules": {
         "functional/no-loop-statement": "off",
-        "functional/no-let": "off"
+        "functional/no-let": "off",
+        "functional/no-return-void": "off"
       }
     }
   ]

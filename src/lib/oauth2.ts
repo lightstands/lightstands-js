@@ -1,5 +1,5 @@
 import { BadStateError, OAuth2Error } from "./errors"
-import { Fork, isRight, Left, Right, unboxLeft, unboxRight, unwrap } from "./fpcore"
+import { filter, forEach, Fork, isRight, Left, Right, unboxLeft, unboxRight, unwrap } from "./fpcore"
 import { Oauth2Service, OpenAPI } from "./internal"
 import { tokenDetailByRefTok } from "./sessions"
 import {ClientConfig, Session} from "./types"
@@ -13,16 +13,23 @@ export type OAuth2AuthorizationCodeFlowRequest = {
   readonly ua_id?: string
 }
 
+/** Get the next jump url for authorization code flow.
+ * This function generate an url can start authorization code flow by visit in browser.
+ *
+ * @param client
+ * @param request Arguements for the authorization
+ * @returns The `URL` can start the authorization
+ */
 export function getAuthorizationUrlForAuthorizationCodeFlow(client: ClientConfig, request: OAuth2AuthorizationCodeFlowRequest): URL {
   const url = new URL('oauth2/~authorize', client.endpointBase)
   const search = url.searchParams
   search.set("response_type", "code")
-  for (const k in request) {
-    const val = (request as Record<string, string | undefined>)[k]
-    if (typeof val !== "undefined") {
-      search.set(k, val)
-    }
-  }
+  forEach(
+    // eslint-disable-next-line functional/no-return-void
+    ([k, v]) => search.set(k, v),
+    filter(
+      ([, v]) => typeof v !== "undefined",
+      Object.entries(request)))
   search.set("code_challenge_method", "plain") // TODO: use S256 by default
   return url
 }

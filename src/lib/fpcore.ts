@@ -178,3 +178,9 @@ export function flatten<L, R>(e: Either<Either<L, R>, Either<L, R>>): Either<L, 
 export function flatEither<L, R, LN, RN>(matcher: EitherMatcher<L, R, Either<LN, RN>, Either<LN, RN>>, e: Either<L, R>): Either<LN, RN> {
   return flatten(either(matcher, e))
 }
+
+export function forEach<E>(effect: (val: E) => void, values: Iterable<E>): void {
+  for (const el of values) {
+    effect(el)
+  }
+}

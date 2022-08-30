@@ -9,7 +9,7 @@ export class BadStateError extends Error {
 
 
 export class BadResponseError extends Error {
-  responseText: string
+  readonly responseText: string
   constructor(responseText: string, message?: string) {
     super(message)
 
@@ -19,7 +19,7 @@ export class BadResponseError extends Error {
 }
 
 export class NotFoundError extends Error {
-  key?: string
+  readonly key?: string
 
   constructor(key?: string, message?: string) {
     super(message)

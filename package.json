@@ -52,6 +52,7 @@
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
     "ava": "^4.3.3",
+    "axios-mock-adapter": "^1.21.2",
     "cspell": "^6.8.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.22.0",
@@ -85,16 +86,12 @@
     "typescript": {
       "rewritePaths": {
         "src/": "build/main/"
-      }
+      },
+      "compile": "tsc"
     },
     "files": [
       "!build/module/**"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
   },
   "prettier": {
     "singleQuote": true

@@ -23,8 +23,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "plugin:functional/lite",
-    "prettier",
-    "prettier/@typescript-eslint"
+    "prettier"
   ],
   "globals": {
     "BigInt": true,
@@ -55,7 +54,9 @@
         "ignoreDeclarationSort": true,
         "ignoreCase": true
       }
-    ]
+    ],
+    "functional/no-throw-statement": "off",
+    "functional/immutable-data": "off"
   },
   "overrides": [
     {
@@ -64,6 +65,31 @@
       ],
       "rules": {
         "eslint-comments/no-unlimited-disable": "off"
+      }
+    },
+    {
+      "files": [
+        "src/lib/errors.ts"
+      ],
+      "rules": {
+        "functional/no-class": "off"
+      }
+    },
+    {
+      "files": [
+        "src/lib/**/*.spec.ts"
+      ],
+      "rules": {
+        "functional/no-return-void": "off"
+      }
+    },
+    {
+      "files": [
+        "src/lib/fpcore.ts"
+      ],
+      "rules": {
+        "functional/no-loop-statement": "off",
+        "functional/no-let": "off"
       }
     }
   ]

@@ -1,10 +1,10 @@
 
 export type Left<L> = {
-  right: false, value: L
+  readonly right: false, readonly value: L
 }
 
 export type Right<R> = {
-  right: true, value: R
+  readonly right: true, readonly value: R
 }
 
 export type Either<L, R> =
@@ -35,11 +35,11 @@ export function Just<T>(value: T): Maybe<T> {
   return Right(value)
 }
 
-export const None: Maybe<any> = Left(undefined)
+export const None: Maybe<never> = Left(undefined)
 
 type EitherMatcher<L, R, LN, RN> = {
-  left: ((l: L) => LN),
-  right: ((r: R) => RN),
+  readonly left: ((l: L) => LN),
+  readonly right: ((r: R) => RN),
 }
 
 export function either<L, R, LN, RN>(matcher: EitherMatcher<L, R, LN, RN>, e: Either<L,R>): Either<LN, RN> {
@@ -50,11 +50,11 @@ export function either<L, R, LN, RN>(matcher: EitherMatcher<L, R, LN, RN>, e: Ei
   }
 }
 
-export function isRight<R>(e: Either<any, R>): e is Right<R> {
+export function isRight<R>(e: Either<unknown, R>): e is Right<R> {
   return e.right
 }
 
-export function isLeft<L>(e: Either<L, any>): e is Left<L> {
+export function isLeft<L>(e: Either<L, unknown>): e is Left<L> {
   return !e.right
 }
 
@@ -70,7 +70,7 @@ export function something<T>(v: Maybe<T>): v is Just<T> {
   return isRight(v)
 }
 
-export function nothing(v: Maybe<any>): v is Nothing {
+export function nothing(v: Maybe<never>): v is Nothing {
   return isLeft(v)
 }
 
@@ -79,7 +79,7 @@ export function nothing(v: Maybe<any>): v is Nothing {
  *
  * @params e an `Either` object.
  */
-export function unwrap<L = Error, R = any>(e: Either<L, R>): R {
+export function unwrap<L = Error, R = unknown>(e: Either<L, R>): R {
   if (isRight(e)) {
     return e.value
   } else {
@@ -103,7 +103,7 @@ export function lmap<L, R, LN>(fn: ((l: L) => LN), e: Either<L, R>): Either<LN, 
 
 export type Fork<L, R> = Promise<Either<L, R>>
 
-export async function aunwrap<L = Error, R = any>(fork: Fork<L, R>): Promise<R> {
+export async function aunwrap<L = Error, R = unknown>(fork: Fork<L, R>): Promise<R> {
   const v = await fork
   return unwrap(either({
     left: (lvalue) => lvalue,

@@ -61,6 +61,8 @@ jobs:
         with:
           version: 7
           run_install: false
+      - name: Build package
+        run: pnpm build
       - name: Publish package
         run: pnpm publish --no-git-checks
         env:

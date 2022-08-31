@@ -19,18 +19,21 @@ LightStandsJS is designed in functional programming pattern for better tree-shak
 Most supported endpoint will end up a function, and expect a `ClientConfig` as the first argument.
 
 ```ts
-import { ClientConfig, get204, aeither } from "@lightstands/lightstands-js"
+import { ClientConfig, get204, aeither } from '@lightstands/lightstands-js';
 
 const client: ClientConfig = {
-  endpointBase: "https://api.lightstands.xyz/moutsea/",
-  clientId: "<client id>",
-  clientSecret: "<client secret>",
-}
+  endpointBase: 'https://api.lightstands.xyz/moutsea/',
+  clientId: '<client id>',
+  clientSecret: '<client secret>',
+};
 
-aeither({
-  left: (e) => console.log("failed to connect LightStands"),
-  right: (v) => v,
-}, get204())
+aeither(
+  {
+    left: (e) => console.log('failed to connect LightStands'),
+    right: (v) => v,
+  },
+  get204()
+);
 ```
 
 It's very recommended to use TypeScript since the whole library is bulit around TypeScript type system.
@@ -38,6 +41,7 @@ It's very recommended to use TypeScript since the whole library is bulit around 
 ## Contributing
 
 You should clone submodules when cloning this repository:
+
 ```
 git clone --recursive https://github.com/lightstands/lightstands-js.git
 ```
@@ -47,6 +51,7 @@ If you already clone without submodules, use `git submodule update` to clone sub
 Maintainer: `Rubicon <rubicon lightstands.xyz>` (Replace the space with at symbol)
 
 ## License
+
 MIT License, see `LICENSE`.
 
 If you contributed any file in this software, you are a "contributor". You, a contributor, hereby be granted:

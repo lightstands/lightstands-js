@@ -7,16 +7,8 @@
   "env": {
     "es6": true
   },
-  "ignorePatterns": [
-    "node_modules",
-    "build",
-    "coverage"
-  ],
-  "plugins": [
-    "import",
-    "eslint-comments",
-    "functional"
-  ],
+  "ignorePatterns": ["node_modules", "build", "coverage"],
+  "plugins": ["import", "eslint-comments", "functional"],
   "extends": [
     "eslint:recommended",
     "plugin:eslint-comments/recommended",
@@ -60,36 +52,27 @@
   },
   "overrides": [
     {
-      "files": [
-        "src/lib/internal/**/*.ts",
-        "src/lib/internal/*.ts"
-      ],
+      "files": ["src/lib/internal/**/*.ts", "src/lib/internal/*.ts"],
       "rules": {
         "eslint-comments/no-unlimited-disable": "off",
         "eslint-comments/no-unused-disable": "off"
       }
     },
     {
-      "files": [
-        "src/lib/errors.ts"
-      ],
+      "files": ["src/lib/errors.ts"],
       "rules": {
         "functional/no-class": "off",
         "functional/no-this-expression": "off"
       }
     },
     {
-      "files": [
-        "src/lib/**/*.spec.ts"
-      ],
+      "files": ["src/lib/**/*.spec.ts"],
       "rules": {
         "functional/no-return-void": "off"
       }
     },
     {
-      "files": [
-        "src/lib/fpcore.ts"
-      ],
+      "files": ["src/lib/fpcore.ts"],
       "rules": {
         "functional/no-loop-statement": "off",
         "functional/no-let": "off",

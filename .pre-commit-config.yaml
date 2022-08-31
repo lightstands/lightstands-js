@@ -1,0 +1,33 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude: 'src/lib/internal/.*'
+      - id: check-added-large-files
+      - id: fix-byte-order-marker
+      - id: destroyed-symlinks
+      - id: mixed-line-ending
+      - id: check-case-conflict
+      - id: detect-private-key
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: 'v2.7.1' # Use the sha / tag you want to point at
+    hooks:
+      - id: prettier
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: 'v8.22.0' # Use the sha / tag you want to point at
+    hooks:
+      - id: eslint
+        files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
+        types: [file]
+        additional_dependencies:
+          - 'eslint@8.22.0'
+          - '@typescript-eslint/eslint-plugin@5.35.1'
+          - '@typescript-eslint/parser@5.35.1'
+          - 'eslint-config-prettier@8.5.0'
+          - 'eslint-plugin-eslint-comments@3.2.0'
+          - 'eslint-plugin-functional@4.2.2'
+          - 'eslint-plugin-import@2.26.0'

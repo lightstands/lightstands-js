@@ -1,20 +1,38 @@
-import { AllRemoteErrors, ERROR_KEYS, OAuth2Error } from "./errors";
-import { aeither, Either, filter, fold, Fork, Left, Right, wrap } from "./fpcore";
-import { ApiError, CancelablePromise, PublicApplication, UserPrivateAccessTokenWithoutToken } from "./internal";
-import { AccessToken, App } from "./types";
+import { AllRemoteErrors, ERROR_KEYS, OAuth2Error } from './errors';
+import {
+  aeither,
+  Either,
+  filter,
+  fold,
+  Fork,
+  Left,
+  Right,
+  wrap,
+} from './fpcore';
+import {
+  ApiError,
+  CancelablePromise,
+  PublicApplication,
+  UserPrivateAccessTokenWithoutToken,
+} from './internal';
+import { AccessToken, App } from './types';
 
-
-export function wrapOpenAPI<T>(original: CancelablePromise<T>): Fork<ApiError, T> {
-  return aeither({
-    left: (val) => {
-      if (val instanceof ApiError) {
-        return val
-      } else {
-        throw TypeError(`expected ApiError, got ${typeof val}`)
-      }
+export function wrapOpenAPI<T>(
+  original: CancelablePromise<T>
+): Fork<ApiError, T> {
+  return aeither(
+    {
+      left: (val) => {
+        if (val instanceof ApiError) {
+          return val;
+        } else {
+          throw TypeError(`expected ApiError, got ${typeof val}`);
+        }
+      },
+      right: (val) => val,
     },
-    right: (val) => val,
-  },(wrap(original)))
+    wrap(original)
+  );
 }
 
 /** Read an error group from an `ApiError`.
@@ -25,20 +43,31 @@ export function wrapOpenAPI<T>(original: CancelablePromise<T>): Fork<ApiError, T
  * @param e the `ApiError` from internal API
  * @returns `Right<AllRemoteErrors>` if error group detected, `Left<ApiError>` the original error if failed
  */
-export function parseLightStandsError(e: ApiError): Either<ApiError, AllRemoteErrors> {
-  const body = JSON.parse(e.body)
-  if (typeof body === "object" && typeof body.ok === "boolean" && typeof body.errors === "object") {
+export function parseLightStandsError(
+  e: ApiError
+): Either<ApiError, AllRemoteErrors> {
+  const body = JSON.parse(e.body);
+  if (
+    typeof body === 'object' &&
+    typeof body.ok === 'boolean' &&
+    typeof body.errors === 'object'
+  ) {
     const keys = filter(
       (key) => ERROR_KEYS.includes(key),
-      Object.keys(body.errors)) as Iterable<keyof AllRemoteErrors>
+      Object.keys(body.errors)
+    ) as Iterable<keyof AllRemoteErrors>;
     return Right(
       fold(
         (prev, next) => ({
           ...prev,
-          [next]: body.errors[next]
-        }), <AllRemoteErrors>{}, keys))
+          [next]: body.errors[next],
+        }),
+        <AllRemoteErrors>{},
+        keys
+      )
+    );
   } else {
-    return Left(e)
+    return Left(e);
   }
 }
 
@@ -48,15 +77,20 @@ export function parseLightStandsError(e: ApiError): Either<ApiError, AllRemoteEr
  * @returns `Right<OAuth2Error>` if success, the original error as `Left<ApiError>` if failed
  */
 export function parseOAuth2Error(e: ApiError): Either<ApiError, OAuth2Error> {
-  const body = JSON.parse(e.body)
-  if (typeof body.error === "string" && typeof body.error_description === "string") {
-    return Right(body as OAuth2Error)
+  const body = JSON.parse(e.body);
+  if (
+    typeof body.error === 'string' &&
+    typeof body.error_description === 'string'
+  ) {
+    return Right(body as OAuth2Error);
   } else {
-    return Left(e)
+    return Left(e);
   }
 }
 
-export function internalAccessTokenAdaptor(remoteTokObj: UserPrivateAccessTokenWithoutToken): AccessToken {
+export function internalAccessTokenAdaptor(
+  remoteTokObj: UserPrivateAccessTokenWithoutToken
+): AccessToken {
   return <AccessToken>{
     userid: remoteTokObj.userid,
     refreshToken: remoteTokObj.refresh_token,
@@ -67,7 +101,7 @@ export function internalAccessTokenAdaptor(remoteTokObj: UserPrivateAccessTokenW
     scope: remoteTokObj.scope,
     updatedAt: Date.parse(remoteTokObj.updated_at),
     userAgent: remoteTokObj.user_agent,
-  }
+  };
 }
 
 export function internalAppAdapter(obj: PublicApplication): App {
@@ -80,5 +114,5 @@ export function internalAppAdapter(obj: PublicApplication): App {
     redirectUri: obj.redirect_uri,
     createdAt: Date.parse(obj.created_at),
     updatedAt: Date.parse(obj.updated_at),
-  }
+  };
 }

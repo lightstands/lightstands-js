@@ -1,40 +1,39 @@
-
 export type ClientConfig = {
-  readonly endpointBase: string
-  readonly clientId: string
-  readonly clientSecret: string | null
-}
+  readonly endpointBase: string;
+  readonly clientId: string;
+  readonly clientSecret: string | null;
+};
 
 export type UserAgent = {
-  readonly p: string
-  readonly dev: string
-}
+  readonly p: string;
+  readonly dev: string;
+};
 
 export type AccessToken = {
-  readonly userid: number
-  readonly token?: string
-  readonly refreshToken: string
-  readonly expiredAt: number
-  readonly createdAt: number
-  readonly active: boolean
-  readonly appid?: number
-  readonly scope: string
-  readonly updatedAt: number
-  readonly userAgent?: UserAgent
-}
+  readonly userid: number;
+  readonly token?: string;
+  readonly refreshToken: string;
+  readonly expiredAt: number;
+  readonly createdAt: number;
+  readonly active: boolean;
+  readonly appid?: number;
+  readonly scope: string;
+  readonly updatedAt: number;
+  readonly userAgent?: UserAgent;
+};
 
 export type Session = {
-  readonly accessToken: string
-  readonly accessTokenObject: AccessToken
-}
+  readonly accessToken: string;
+  readonly accessTokenObject: AccessToken;
+};
 
 export type App = {
-  readonly appid: number
-  readonly name: string
-  readonly ownerId?: number
-  readonly clientId: string
-  readonly scope: string
-  readonly redirectUri?: string
-  readonly createdAt: number
-  readonly updatedAt: number
-}
+  readonly appid: number;
+  readonly name: string;
+  readonly ownerId?: number;
+  readonly clientId: string;
+  readonly scope: string;
+  readonly redirectUri?: string;
+  readonly createdAt: number;
+  readonly updatedAt: number;
+};

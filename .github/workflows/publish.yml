@@ -62,6 +62,6 @@ jobs:
           version: 7
           run_install: false
       - name: Publish package
-        run: pnpm publish
+        run: pnpm publish --publish-branch ${{ github.ref_name }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

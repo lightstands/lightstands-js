@@ -4,9 +4,9 @@ TypeScript/JavaScript LightStands client library
 
 ## Installation
 
-- `pnpm add @lightstands/lightstands-js`
-- `yarn add @lightstands/lightstands-js`
-- `npm i --save @lightstands/lightstands-js`
+- `pnpm add lightstands-js`
+- `yarn add lightstands-js`
+- `npm i --save lightstands-js`
 
 ## Early Access Warning
 
@@ -19,7 +19,7 @@ LightStandsJS is designed in functional programming pattern for better tree-shak
 Most supported endpoint will end up a function, and expect a `ClientConfig` as the first argument.
 
 ```ts
-import { ClientConfig, get204, aeither } from '@lightstands/lightstands-js';
+import { ClientConfig, get204, aeither } from 'lightstands-js';
 
 const client: ClientConfig = {
   endpointBase: 'https://api.lightstands.xyz/moutsea/',
@@ -47,6 +47,12 @@ git clone --recursive https://github.com/lightstands/lightstands-js.git
 ```
 
 If you already clone without submodules, use `git submodule update` to clone submodules.
+
+Please install pre-commit hook by [pre-commit](https://pre-commit.com) before doing any contribution:
+
+```
+pre-commit install
+```
 
 Maintainer: `Rubicon <rubicon lightstands.xyz>` (Replace the space with at symbol)
 

@@ -37,3 +37,8 @@ export type App = {
   readonly createdAt: number;
   readonly updatedAt: number;
 };
+
+export type PublicSettings = {
+  readonly apiLayerVersion: number;
+  readonly hcaptchaSiteKey?: string;
+};

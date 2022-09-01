@@ -13,9 +13,10 @@ import {
   ApiError,
   CancelablePromise,
   PublicApplication,
+  ServerPublicSettings,
   UserPrivateAccessTokenWithoutToken,
 } from './internal';
-import { AccessToken, App } from './types';
+import { AccessToken, App, PublicSettings } from './types';
 
 export function wrapOpenAPI<T>(
   original: CancelablePromise<T>
@@ -114,5 +115,14 @@ export function internalAppAdapter(obj: PublicApplication): App {
     redirectUri: obj.redirect_uri,
     createdAt: Date.parse(obj.created_at),
     updatedAt: Date.parse(obj.updated_at),
+  };
+}
+
+export function internalPublicSettingsAdapter(
+  obj: ServerPublicSettings
+): PublicSettings {
+  return <PublicSettings>{
+    apiLayerVersion: obj.api_layer_version,
+    hcaptchaSiteKey: obj.hcaptcha_site_key,
   };
 }

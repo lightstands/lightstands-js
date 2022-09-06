@@ -32,7 +32,7 @@ aeither(
     left: (e) => console.log('failed to connect LightStands'),
     right: (v) => v,
   },
-  get204()
+  get204(),
 );
 ```
 

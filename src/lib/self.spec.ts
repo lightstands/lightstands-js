@@ -52,7 +52,7 @@ test('getPublicSettings can return settings if the remote do', async (t) => {
   t.true(
     isRight(result) &&
       unboxRight(result).apiLayerVersion === 0 &&
-      unboxRight(result).hcaptchaSiteKey === 'anysitekey'
+      unboxRight(result).hcaptchaSiteKey === 'anysitekey',
   );
 });
 

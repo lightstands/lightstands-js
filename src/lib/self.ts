@@ -13,12 +13,12 @@ export function get204(client: ClientConfig): Fork<never, void> {
       // eslint-disable-next-line functional/no-return-void, @typescript-eslint/no-empty-function
       right: (): void => {},
     },
-    wrapOpenAPI(SelfService.generate204SelfGenerate204Get())
+    wrapOpenAPI(SelfService.generate204SelfGenerate204Get()),
   );
 }
 
 export function getPublicSettings(
-  client: ClientConfig
+  client: ClientConfig,
 ): Fork<never, PublicSettings> {
   OpenAPI.BASE = client.endpointBase;
   return aeither(
@@ -28,6 +28,6 @@ export function getPublicSettings(
       },
       right: internalPublicSettingsAdapter,
     },
-    wrapOpenAPI(SelfService.publicSettingsSelfSettingsGet())
+    wrapOpenAPI(SelfService.publicSettingsSelfSettingsGet()),
   );
 }

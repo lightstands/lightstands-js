@@ -124,10 +124,10 @@ export async function aunwrap<L = Error, R = unknown>(
   return unwrap(
     either(
       {
-        left: (lvalue) => lvalue,
-        right: (rvalue) => {
-          throw rvalue;
+        left: (lvalue) => {
+          throw lvalue;
         },
+        right: (rvalue) => rvalue,
       },
       v,
     ),

@@ -19,7 +19,7 @@ import {
 import { AccessToken, App, PublicSettings } from './types';
 
 export function wrapOpenAPI<T>(
-  original: CancelablePromise<T>
+  original: CancelablePromise<T>,
 ): Fork<ApiError, T> {
   return aeither(
     {
@@ -32,7 +32,7 @@ export function wrapOpenAPI<T>(
       },
       right: (val) => val,
     },
-    wrap(original)
+    wrap(original),
   );
 }
 
@@ -45,7 +45,7 @@ export function wrapOpenAPI<T>(
  * @returns `Right<AllRemoteErrors>` if error group detected, `Left<ApiError>` the original error if failed
  */
 export function parseLightStandsError(
-  e: ApiError
+  e: ApiError,
 ): Either<ApiError, AllRemoteErrors> {
   const body = JSON.parse(e.body);
   if (
@@ -55,7 +55,7 @@ export function parseLightStandsError(
   ) {
     const keys = filter(
       (key) => ERROR_KEYS.includes(key),
-      Object.keys(body.errors)
+      Object.keys(body.errors),
     ) as Iterable<keyof AllRemoteErrors>;
     return Right(
       fold(
@@ -64,8 +64,8 @@ export function parseLightStandsError(
           [next]: body.errors[next],
         }),
         <AllRemoteErrors>{},
-        keys
-      )
+        keys,
+      ),
     );
   } else {
     return Left(e);
@@ -90,7 +90,7 @@ export function parseOAuth2Error(e: ApiError): Either<ApiError, OAuth2Error> {
 }
 
 export function internalAccessTokenAdaptor(
-  remoteTokObj: UserPrivateAccessTokenWithoutToken
+  remoteTokObj: UserPrivateAccessTokenWithoutToken,
 ): AccessToken {
   return <AccessToken>{
     userid: remoteTokObj.userid,
@@ -119,7 +119,7 @@ export function internalAppAdapter(obj: PublicApplication): App {
 }
 
 export function internalPublicSettingsAdapter(
-  obj: ServerPublicSettings
+  obj: ServerPublicSettings,
 ): PublicSettings {
   return <PublicSettings>{
     apiLayerVersion: obj.api_layer_version,

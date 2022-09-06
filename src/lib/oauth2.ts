@@ -32,7 +32,7 @@ export type OAuth2AuthorizationCodeFlowRequest = {
  */
 export function getAuthorizationUrlForAuthorizationCodeFlow(
   client: ClientConfig,
-  request: OAuth2AuthorizationCodeFlowRequest
+  request: OAuth2AuthorizationCodeFlowRequest,
 ): URL {
   const url = new URL('oauth2/~authorize', client.endpointBase);
   const search = url.searchParams;
@@ -40,7 +40,7 @@ export function getAuthorizationUrlForAuthorizationCodeFlow(
   forEach(
     // eslint-disable-next-line functional/no-return-void
     ([k, v]) => search.set(k, v),
-    filter(([, v]) => typeof v !== 'undefined', Object.entries(request))
+    filter(([, v]) => typeof v !== 'undefined', Object.entries(request)),
   );
   search.set('code_challenge_method', 'plain'); // TODO: use S256 by default
   return url;
@@ -58,7 +58,7 @@ export async function completeAuthorizationCodeFlow(
   client: ClientConfig,
   redirect_uri: string,
   code_verifier: string,
-  code: string
+  code: string,
 ): Fork<OAuth2Error, Session> {
   OpenAPI.BASE = client.endpointBase;
   const result = await wrapOpenAPI(
@@ -69,7 +69,7 @@ export async function completeAuthorizationCodeFlow(
       code_verifier,
       client_id: client.clientId,
       client_secret: client.clientSecret ?? undefined,
-    })
+    }),
   );
   if (isRight(result)) {
     const response = unboxRight(result);

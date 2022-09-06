@@ -10,13 +10,13 @@ import {
 
 export async function tokenDetailByRefTok(
   client: ClientConfig,
-  refreshToken: string
+  refreshToken: string,
 ): Promise<AccessToken | null> {
   OpenAPI.BASE = client.endpointBase;
   try {
     const response =
       await SessionsService.getAccessTokenByRefreshTokenAccessTokensSpecificRefTokGet(
-        refreshToken
+        refreshToken,
       );
     const remoteTokObj = response.access_token;
     return internalAccessTokenAdaptor(remoteTokObj);
@@ -39,7 +39,7 @@ export async function newSession(
   scope: string,
   userAgentId?: string,
   userAgent?: UserAgent,
-  authCode?: string
+  authCode?: string,
 ): Fork<AllRemoteErrors, Session> {
   OpenAPI.BASE = client.endpointBase;
   OpenAPI.TOKEN = session.accessToken;
@@ -50,7 +50,7 @@ export async function newSession(
       user_agent_id: userAgentId,
       auth_code: authCode,
       user_agent: userAgent,
-    })
+    }),
   );
   return either(
     {
@@ -64,7 +64,7 @@ export async function newSession(
         };
       },
     },
-    result
+    result,
   );
 }
 
@@ -74,7 +74,7 @@ export async function newSessionByPassword(
   password: string,
   scope: string,
   userAgentId?: string,
-  userAgent?: UserAgent
+  userAgent?: UserAgent,
 ): Fork<AllRemoteErrors, Session> {
   OpenAPI.BASE = client.endpointBase;
   return aeither(
@@ -96,8 +96,8 @@ export async function newSessionByPassword(
           scope,
           user_agent_id: userAgentId,
           user_agent: userAgent,
-        }
-      )
-    )
+        },
+      ),
+    ),
   );
 }

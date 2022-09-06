@@ -10,31 +10,31 @@ type AppIdObject = { readonly appid: number };
 function appDetailBySelector(selector: Record<string, unknown>) {
   if (typeof selector.client_id !== 'undefined') {
     return ApplicationsService.getAppByClientIdAppsByClientIdClientIdGet(
-      (selector as ClientIdObject).client_id
+      (selector as ClientIdObject).client_id,
     );
   } else if (typeof selector.appid !== 'undefined') {
     return ApplicationsService.getAppByAppidAppsByIdAppidGet(
-      (selector as AppIdObject).appid
+      (selector as AppIdObject).appid,
     );
   } else {
     throw new TypeError(
-      `expect an object with field "client_id" or "appid", got ${selector}`
+      `expect an object with field "client_id" or "appid", got ${selector}`,
     );
   }
 }
 
 export function getAppDetail(
   client: ClientConfig,
-  selector: ClientIdObject
+  selector: ClientIdObject,
 ): Fork<NotFoundError, App>;
 export function getAppDetail(
   client: ClientConfig,
-  selector: AppIdObject
+  selector: AppIdObject,
 ): Fork<NotFoundError, App>;
 
 export async function getAppDetail(
   client: ClientConfig,
-  selector: Record<string, unknown>
+  selector: Record<string, unknown>,
 ): Fork<NotFoundError, App> {
   OpenAPI.BASE = client.endpointBase;
   const promise = appDetailBySelector(selector);
@@ -49,6 +49,6 @@ export async function getAppDetail(
       },
       right: internalAppAdapter,
     },
-    wrapOpenAPI(promise)
+    wrapOpenAPI(promise),
   );
 }

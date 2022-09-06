@@ -16,7 +16,7 @@ export class UserInformationService {
      *
      * Possible errors:
      * - `unauthorised`
-     * - `scopenotcovered`
+     * - `scopenotcovered(user.change_password)`
      * @param userid
      * @param requestBody
      * @returns void

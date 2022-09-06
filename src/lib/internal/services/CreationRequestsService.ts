@@ -33,13 +33,13 @@ export class CreationRequestsService {
      * @returns CreationRequestCreated Successful Response
      * @throws ApiError
      */
-    public static putCreationRequestUsersCreationRequestsReqIdPut(
+    public static putCreationRequestCreationRequestsReqIdPut(
         reqId: string,
         requestBody: CreationRequest,
     ): CancelablePromise<CreationRequestCreated> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/users/creation_requests/{req_id}',
+            url: '/creation_requests/{req_id}',
             path: {
                 'req_id': reqId,
             },
@@ -71,12 +71,12 @@ export class CreationRequestsService {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static requestCreationVerificationUsersCreationRequestsReqIdRequestVerifyPost(
+    public static requestCreationVerificationCreationRequestsReqIdRequestVerifyPost(
         reqId: string,
     ): CancelablePromise<(VerificationRequested | VerificationInitFailed)> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/users/creation_requests/{req_id}/~request-verify',
+            url: '/creation_requests/{req_id}/~request-verify',
             path: {
                 'req_id': reqId,
             },
@@ -99,13 +99,13 @@ export class CreationRequestsService {
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static resolveCreationRequestUsersCreationRequestsReqIdResolvePost(
+    public static resolveCreationRequestCreationRequestsReqIdResolvePost(
         reqId: string,
         requestBody: CreationRequestFinal,
     ): CancelablePromise<(CreationRequestResolved | CreationRequestUnresolved)> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/users/creation_requests/{req_id}/~resolve',
+            url: '/creation_requests/{req_id}/~resolve',
             path: {
                 'req_id': reqId,
             },
@@ -130,13 +130,13 @@ export class CreationRequestsService {
      * @returns ChallengeAnswer Successful Response
      * @throws ApiError
      */
-    public static checkChallengeUsersCreationRequestsReqIdCheckChallengePost(
+    public static checkChallengeCreationRequestsReqIdCheckChallengePost(
         reqId: string,
         requestBody: ChallengeCheck,
     ): CancelablePromise<ChallengeAnswer> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/users/creation_requests/{req_id}/~check-challenge',
+            url: '/creation_requests/{req_id}/~check-challenge',
             path: {
                 'req_id': reqId,
             },

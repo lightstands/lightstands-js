@@ -85,13 +85,15 @@ export class SessionsService {
      * Create Access Token By Password
      * Create a new access token by password.
      *
-     * If `user_agent_id` is not null, this endpoint will try to return a recent access token matches `user_agent_id`.
+     * If `user_agent_id` is not null, this endpoint will try to return a recent
+     * access token matches `user_agent_id`. Old scope will be reset and new
+     * scope will be applied.
      *
-     * `user_agent_id` and `user_agent` will be applied to new access token if creating is required.
+     * `user_agent_id` and `user_agent` will be applied to new access token if
+     * creating is required.
      *
      * Possible RPC errors:
      * - `notfound(username,password)`
-     * - `conditionrequires(scope)`
      * @param requestBody
      * @returns AccessTokenCreated Successful Response
      * @throws ApiError

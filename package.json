@@ -18,7 +18,6 @@
     "test": "run-s build test:*",
     "test:lint": "eslint src --ext .ts",
     "test:prettier": "prettier \"src/**/*.ts\" --list-different",
-    "test:spelling": "cspell \"{README.md,.github/*.md,src/**/*.ts}\"",
     "test:unit": "nyc --silent ava -s",
     "check-cli": "run-s test diff-integration-tests check-integration-tests",
     "check-integration-tests": "run-s check-integration-test:*",
@@ -48,17 +47,16 @@
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/node": "^18.7.15",
+    "@types/node": "^18.7.16",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
     "ava": "^4.3.3",
     "axios-mock-adapter": "^1.21.2",
-    "cspell": "^6.8.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-functional": "^4.2.2",
+    "eslint-plugin-functional": "^4.3.0",
     "eslint-plugin-import": "^2.26.0",
     "gh-pages": "^4.0.0",
     "npm-run-all": "^4.1.5",
@@ -69,7 +67,7 @@
     "standard-version": "^9.5.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.23.14",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.3"
   },
   "files": [
     "build/main",

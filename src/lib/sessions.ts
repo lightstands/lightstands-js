@@ -1,8 +1,9 @@
-import { AllRemoteErrors } from './errors';
+import { AllRemoteErrors, NotFoundError } from './errors';
 import { aeither, either, Fork, unwrap } from './fpcore';
 import { ApiError, OpenAPI, SessionsService } from './internal';
 import { AccessToken, ClientConfig, Session, UserAgent } from './types';
 import {
+  date2DateTime,
   internalAccessTokenAdaptor,
   parseLightStandsError,
   wrapOpenAPI,
@@ -96,6 +97,40 @@ export async function newSessionByPassword(
           scope,
           user_agent_id: userAgentId,
           user_agent: userAgent,
+        },
+      ),
+    ),
+  );
+}
+
+export async function refreshSession(
+  client: ClientConfig,
+  session: Session,
+  expireIn: number = 60 * 60 * 24 * 30,
+): Fork<NotFoundError, Session> {
+  OpenAPI.BASE = client.endpointBase;
+  const expiredAt = date2DateTime(new Date(Date.now() + expireIn));
+  return aeither(
+    {
+      left(l) {
+        if (l.status === 404) {
+          return new NotFoundError('ref_tok');
+        } else {
+          throw l;
+        }
+      },
+      right(r) {
+        return {
+          accessToken: session.accessToken,
+          accessTokenObject: internalAccessTokenAdaptor(r.access_token),
+        };
+      },
+    },
+    wrapOpenAPI(
+      SessionsService.updateTokenExpiringTimeAccessTokensSpecificRefTokRefreshPost(
+        session.accessTokenObject.refreshToken,
+        {
+          target: expiredAt,
         },
       ),
     ),

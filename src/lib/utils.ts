@@ -12,6 +12,7 @@ import {
 import {
   ApiError,
   CancelablePromise,
+  DateTime,
   PublicApplication,
   ServerPublicSettings,
   UserPrivateAccessTokenWithoutToken,
@@ -124,5 +125,15 @@ export function internalPublicSettingsAdapter(
   return <PublicSettings>{
     apiLayerVersion: obj.api_layer_version,
     hcaptchaSiteKey: obj.hcaptcha_site_key,
+  };
+}
+
+export function date2DateTime(d: Date): DateTime {
+  return {
+    year: d.getUTCFullYear(),
+    month: d.getUTCMonth(),
+    day: d.getUTCDate(),
+    hour: d.getUTCHours(),
+    second: d.getUTCSeconds(),
   };
 }

@@ -2,6 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { PasswordChangeRequest } from '../models/PasswordChangeRequest';
+import type { UserPrivateInformation } from '../models/UserPrivateInformation';
+import type { UserPublicInformation } from '../models/UserPublicInformation';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -34,6 +36,66 @@ export class UsersService {
             },
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get User Public Information
+     * Get user public information of `userid`. Including:
+     *
+     * - username
+     *
+     * Possible RESTful Errors:
+     * - `notfound(userid)`, `404`
+     * @param userid
+     * @returns UserPublicInformation Successful Response
+     * @throws ApiError
+     */
+    public static getUserPublicInformationUsersUseridPublicGet(
+        userid: number,
+    ): CancelablePromise<UserPublicInformation> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{userid}/public',
+            path: {
+                'userid': userid,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get User Private Information
+     * Get user public and private information of `userid`. Including:
+     *
+     * - username
+     * - email address
+     *
+     * Possible RESTful Errors:
+     * - `scopenotcovered(user.read)`, `403`
+     * - `notfound(userid)`, `404`
+     * @param userid
+     * @returns UserPrivateInformation Successful Response
+     * @throws ApiError
+     */
+    public static getUserPrivateInformationUsersUseridPrivateGet(
+        userid: number,
+    ): CancelablePromise<UserPrivateInformation> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{userid}/private',
+            path: {
+                'userid': userid,
+            },
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

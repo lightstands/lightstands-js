@@ -36,7 +36,7 @@
     "version": "standard-version",
     "reset-hard": "git clean -dfx && git reset --hard && pnpm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html version doc:publish",
-    "generate-internal": "openapi -i openapi/openapi.json -o src/lib/internal -c axios"
+    "generate-internal": "rm -r src/lib/internal && openapi -i openapi/openapi.json -o src/lib/internal -c axios"
   },
   "engines": {
     "node": ">=10"

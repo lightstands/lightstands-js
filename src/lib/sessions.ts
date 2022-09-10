@@ -4,6 +4,7 @@ import { ApiError, OpenAPI, SessionsService } from './internal';
 import { AccessToken, ClientConfig, Session, UserAgent } from './types';
 import {
   date2DateTime,
+  ensureOpenAPIEnv,
   internalAccessTokenAdaptor,
   parseLightStandsError,
   wrapOpenAPI,
@@ -37,21 +38,25 @@ export async function tokenDetailByRefTok(
 export async function newSession(
   client: ClientConfig,
   session: Session,
+  clientId: string,
   scope: string,
   userAgentId?: string,
   userAgent?: UserAgent,
   authCode?: string,
 ): Fork<AllRemoteErrors, Session> {
-  OpenAPI.BASE = client.endpointBase;
-  OpenAPI.TOKEN = session.accessToken;
-  const result = await wrapOpenAPI(
-    SessionsService.createAccessTokenAccessTokensCreatePost({
-      client_id: client.clientId,
-      scope,
-      user_agent_id: userAgentId,
-      auth_code: authCode,
-      user_agent: userAgent,
-    }),
+  const result = await ensureOpenAPIEnv(
+    () =>
+      wrapOpenAPI(
+        SessionsService.createAccessTokenAccessTokensCreatePost({
+          client_id: clientId,
+          scope,
+          user_agent_id: userAgentId,
+          auth_code: authCode,
+          user_agent: userAgent,
+        }),
+      ),
+    client,
+    session,
   );
   return either(
     {

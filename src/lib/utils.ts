@@ -13,11 +13,18 @@ import {
   ApiError,
   CancelablePromise,
   DateTime,
+  OpenAPI,
   PublicApplication,
   ServerPublicSettings,
   UserPrivateAccessTokenWithoutToken,
 } from './internal';
-import { AccessToken, App, PublicSettings } from './types';
+import {
+  AccessToken,
+  App,
+  ClientConfig,
+  PublicSettings,
+  Session,
+} from './types';
 
 export function wrapOpenAPI<T>(
   original: CancelablePromise<T>,
@@ -136,4 +143,22 @@ export function date2DateTime(d: Date): DateTime {
     hour: d.getUTCHours(),
     second: d.getUTCSeconds(),
   };
+}
+
+/** Setting environment for generated code.
+ * Since the generated code uses a global variable for the configuration, we could not ensure,
+ * after the first promise resolved in callback, if the value will keep the same.
+ * @param callback
+ * @param client
+ * @param session
+ * @returns
+ */
+export async function ensureOpenAPIEnv<R>(
+  callback: () => Promise<R>,
+  client: ClientConfig,
+  session?: Session,
+): Promise<R> {
+  OpenAPI.BASE = client.endpointBase;
+  OpenAPI.TOKEN = session?.accessToken;
+  return await callback();
 }

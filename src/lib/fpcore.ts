@@ -60,12 +60,35 @@ export function isLeft<L>(e: Either<L, unknown>): e is Left<L> {
   return !e.right;
 }
 
-export function unboxRight<R>(v: Right<R>): R {
-  return v.value;
+export function unbox<T>(value: Right<T>): T;
+
+export function unbox<T>(value: Left<T>): T;
+
+/** Unbox the value container
+ *
+ * @param value the box
+ * @returns the contained value
+ */
+export function unbox<T>(value: Left<T> | Right<T>): T {
+  return value.value;
 }
 
+/** Unbox a `Right` value.
+ *
+ * @param v the box
+ * @returns the contained value
+ */
+export function unboxRight<R>(v: Right<R>): R {
+  return unbox(v);
+}
+
+/** Unbox a `Left` value.
+ *
+ * @param v the box
+ * @returns the contained value
+ */
 export function unboxLeft<L>(v: Left<L>): L {
-  return v.value;
+  return unbox(v);
 }
 
 export function something<T>(v: Maybe<T>): v is Just<T> {

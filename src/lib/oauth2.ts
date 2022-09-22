@@ -39,8 +39,17 @@ export function getAuthorizationUrlForAuthorizationCodeFlow(
   search.set('response_type', 'code');
   forEach(
     // eslint-disable-next-line functional/no-return-void
-    ([k, v]) => search.set(k, v),
-    filter(([, v]) => typeof v !== 'undefined', Object.entries(request)),
+    ([k, v]) => search.set(k, v as unknown as string),
+    filter(
+      ([, v]) => typeof v !== 'undefined',
+      Object.entries({
+        ...request,
+        client_id: client.clientId,
+        client_secret: client.clientSecret ? client.clientSecret : undefined,
+        code_verifier: undefined,
+        code_challenge: request.code_verifier,
+      }),
+    ),
   );
   search.set('code_challenge_method', 'plain'); // TODO: use S256 by default
   return url;

@@ -26,6 +26,21 @@ export class Oauth2Service {
      * - `state`: 512 bytes
      * - `ua_id`: 256 bytes
      * - `code_challenge`: 64 bytes
+     *
+     * LightStands server software will redirect to `redirect_uri` with these arguments in search string:
+     * - `code`: a string of authorization code
+     * - `state`: the `state`
+     *
+     * For example:
+     * ```uri
+     * https://lightstands.xyz/apps/oauth2-callback?code=af2p5b4d3&state=1%40lightstands.xyz
+     * ```
+     *
+     * The software will redirect user to the same uri with the arguments below:
+     * - `error`: the error name in OAuth 2 standard
+     * - `error_description`: detailed custom description for the situtation
+     * - `error_uri`: optional, only exists when the link may help developer out of the situtaion
+     * - `state`: optional, only exists when we think it can be accessed at the moment.
      * @param responseType
      * @param clientId
      * @param redirectUri

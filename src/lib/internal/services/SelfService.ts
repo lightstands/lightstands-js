@@ -1,7 +1,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ServerLoadCapture } from '../models/ServerLoadCapture';
 import type { ServerPublicSettings } from '../models/ServerPublicSettings';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -33,20 +32,6 @@ export class SelfService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/self/~generate-204',
-        });
-    }
-
-    /**
-     * @deprecated
-     * Server Load Details
-     * Simple server load details.
-     * @returns ServerLoadCapture Successful Response
-     * @throws ApiError
-     */
-    public static serverLoadDetailsSelfServerLoadGet(): CancelablePromise<ServerLoadCapture> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/self/server-load',
         });
     }
 

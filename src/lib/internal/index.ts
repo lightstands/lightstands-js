@@ -28,7 +28,6 @@ export type { PublicApplication } from './models/PublicApplication';
 export type { RevokingAccessTokenRequest } from './models/RevokingAccessTokenRequest';
 export type { RevokingCompleted } from './models/RevokingCompleted';
 export type { RevokingRequiresAge } from './models/RevokingRequiresAge';
-export type { ServerLoadCapture } from './models/ServerLoadCapture';
 export type { ServerPublicSettings } from './models/ServerPublicSettings';
 export type { SessionAccessTokenCreating } from './models/SessionAccessTokenCreating';
 export type { TokenUpdated } from './models/TokenUpdated';

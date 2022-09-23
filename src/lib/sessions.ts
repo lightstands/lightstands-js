@@ -12,27 +12,33 @@ import {
 
 export async function tokenDetailByRefTok(
   client: ClientConfig,
+  session: Session,
   refreshToken: string,
 ): Promise<AccessToken | null> {
-  OpenAPI.BASE = client.endpointBase;
-  try {
-    const response =
-      await SessionsService.getAccessTokenByRefreshTokenAccessTokensSpecificRefTokGet(
-        refreshToken,
-      );
-    const remoteTokObj = response.access_token;
-    return internalAccessTokenAdaptor(remoteTokObj);
-  } catch (e: unknown) {
-    if (e instanceof ApiError) {
-      if (e.status == 404) {
-        return null;
-      } else {
-        throw e;
+  return await ensureOpenAPIEnv(
+    async () => {
+      try {
+        const response =
+          await SessionsService.getAccessTokenByRefreshTokenAccessTokensSpecificRefTokGet(
+            refreshToken,
+          );
+        const remoteTokObj = response.access_token;
+        return internalAccessTokenAdaptor(remoteTokObj);
+      } catch (e: unknown) {
+        if (e instanceof ApiError) {
+          if (e.status == 404) {
+            return null;
+          } else {
+            throw e;
+          }
+        } else {
+          throw e;
+        }
       }
-    } else {
-      throw e;
-    }
-  }
+    },
+    client,
+    session,
+  );
 }
 
 export async function newSession(

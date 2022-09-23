@@ -52,7 +52,7 @@ export class SessionsService {
 
     /**
      * Get Access Token By Refresh Token
-     * Get an access token object by refresh token. Requires `session.list` scope.
+     * Get an access token object by refresh token. Requires `session.list` scope if the refresh token is not associated with the using session.
      *
      * Refresh tokens can be used to refresh expired time without granting access to account,
      * also act as unique identity to access token.

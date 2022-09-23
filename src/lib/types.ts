@@ -41,6 +41,7 @@ export type App = {
 export type PublicSettings = {
   readonly apiLayerVersion: number;
   readonly hcaptchaSiteKey?: string;
+  readonly quote: string;
 };
 
 export type PublicUser = {

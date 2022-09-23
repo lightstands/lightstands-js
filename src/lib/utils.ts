@@ -132,6 +132,7 @@ export function internalPublicSettingsAdapter(
   return <PublicSettings>{
     apiLayerVersion: obj.api_layer_version,
     hcaptchaSiteKey: obj.hcaptcha_site_key,
+    quote: obj.quote,
   };
 }
 

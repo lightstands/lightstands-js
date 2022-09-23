@@ -46,6 +46,7 @@ test('getPublicSettings can return settings if the remote do', async (t) => {
   mock.onGet('/self/settings').reply(200, {
     api_layer_version: 0,
     hcaptcha_site_key: 'anysitekey',
+    quote: 'string',
   });
   const client = t.context.client;
   const result = await getPublicSettings(client);

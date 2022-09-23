@@ -12,7 +12,7 @@ import {
 } from './fpcore';
 import { Oauth2Service, OpenAPI } from './internal';
 import { tokenDetailByRefTok } from './sessions';
-import { ClientConfig, Session } from './types';
+import { ClientConfig, Session, SessionAccess } from './types';
 import { parseOAuth2Error, wrapOpenAPI } from './utils';
 
 export type OAuth2AuthorizationCodeFlowRequest = {
@@ -82,7 +82,14 @@ export async function completeAuthorizationCodeFlow(
   );
   if (isRight(result)) {
     const response = unboxRight(result);
-    const tokObject = await tokenDetailByRefTok(client, response.refresh_token);
+    const fakeSession: SessionAccess = {
+      accessToken: response.access_token,
+    };
+    const tokObject = await tokenDetailByRefTok(
+      client,
+      fakeSession,
+      response.refresh_token,
+    );
     if (tokObject === null) {
       throw new BadStateError('Token lost just after oauth 2 code exchaning');
     }

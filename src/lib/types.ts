@@ -22,8 +22,11 @@ export type AccessToken = {
   readonly userAgent?: UserAgent;
 };
 
-export type Session = {
+export type SessionAccess = {
   readonly accessToken: string;
+};
+
+export type Session = SessionAccess & {
   readonly accessTokenObject: AccessToken;
 };
 

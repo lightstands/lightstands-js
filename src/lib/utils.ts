@@ -23,7 +23,7 @@ import {
   App,
   ClientConfig,
   PublicSettings,
-  Session,
+  SessionAccess,
 } from './types';
 
 export function wrapOpenAPI<T>(
@@ -157,7 +157,7 @@ export function date2DateTime(d: Date): DateTime {
 export async function ensureOpenAPIEnv<R>(
   callback: () => Promise<R>,
   client: ClientConfig,
-  session?: Session,
+  session?: SessionAccess,
 ): Promise<R> {
   OpenAPI.BASE = client.endpointBase;
   OpenAPI.TOKEN = session?.accessToken;

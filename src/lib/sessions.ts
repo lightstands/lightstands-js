@@ -1,7 +1,13 @@
 import { AllRemoteErrors, NotFoundError } from './errors';
 import { aeither, either, Fork, unwrap } from './fpcore';
 import { ApiError, OpenAPI, SessionsService } from './internal';
-import { AccessToken, ClientConfig, Session, UserAgent } from './types';
+import {
+  AccessToken,
+  ClientConfig,
+  Session,
+  SessionAccess,
+  UserAgent,
+} from './types';
 import {
   date2DateTime,
   ensureOpenAPIEnv,
@@ -12,7 +18,7 @@ import {
 
 export async function tokenDetailByRefTok(
   client: ClientConfig,
-  session: Session,
+  session: SessionAccess,
   refreshToken: string,
 ): Promise<AccessToken | null> {
   return await ensureOpenAPIEnv(

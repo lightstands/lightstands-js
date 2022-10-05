@@ -103,12 +103,12 @@ export function internalAccessTokenAdaptor(
   return <AccessToken>{
     userid: remoteTokObj.userid,
     refreshToken: remoteTokObj.refresh_token,
-    expiredAt: Date.parse(remoteTokObj.expired_at),
-    createdAt: Date.parse(remoteTokObj.created_at),
+    expiredAt: remoteTokObj.expired_at,
+    createdAt: remoteTokObj.created_at,
     active: remoteTokObj.active,
     appid: remoteTokObj.appid,
     scope: remoteTokObj.scope,
-    updatedAt: Date.parse(remoteTokObj.updated_at),
+    updatedAt: remoteTokObj.updated_at,
     userAgent: remoteTokObj.user_agent,
   };
 }
@@ -121,8 +121,8 @@ export function internalAppAdapter(obj: PublicApplication): App {
     clientId: obj.client_id,
     scope: obj.scope,
     redirectUri: obj.redirect_uri,
-    createdAt: Date.parse(obj.created_at),
-    updatedAt: Date.parse(obj.updated_at),
+    createdAt: obj.created_at,
+    updatedAt: obj.updated_at,
   };
 }
 

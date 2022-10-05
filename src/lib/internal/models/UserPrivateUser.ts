@@ -6,6 +6,6 @@ export type UserPrivateUser = {
     userid: number;
     username: string;
     email?: string;
-    created_at: string;
+    created_at: number;
 };
 

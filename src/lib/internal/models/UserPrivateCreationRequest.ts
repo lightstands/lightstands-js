@@ -5,8 +5,8 @@
 export type UserPrivateCreationRequest = {
     identifier: string;
     challenge_failed_counter: number;
-    created_at: string;
-    request_verification_at?: string;
+    created_at: number;
+    request_verification_at?: number;
     request_verification_counter: number;
     resolved: boolean;
 };

@@ -9,7 +9,7 @@ export type PublicApplication = {
     client_id: string;
     scope: string;
     redirect_uri?: string;
-    created_at: string;
-    updated_at: string;
+    created_at: number;
+    updated_at: number;
 };
 

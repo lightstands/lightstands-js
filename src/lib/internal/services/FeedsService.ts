@@ -4,12 +4,38 @@
 import type { FeedPosts } from '../models/FeedPosts';
 import type { PublicFeed } from '../models/PublicFeed';
 import type { PublicPost } from '../models/PublicPost';
+import type { ResolvedFeed } from '../models/ResolvedFeed';
+import type { ResolveFeedOpts } from '../models/ResolveFeedOpts';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class FeedsService {
+
+    /**
+     * Resolve Feed
+     * Resolve the feed url and tell the server software listen to the feed if possible.
+     *
+     * This endpoint have 1 second delay for each call to prevent abuse.
+     * @param requestBody
+     * @returns ResolvedFeed Successful Response
+     * @throws ApiError
+     */
+    public static resolveFeedFeedsResolvePost(
+        requestBody: ResolveFeedOpts,
+    ): CancelablePromise<ResolvedFeed> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/feeds/~resolve',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad Request`,
+                422: `Validation Error`,
+            },
+        });
+    }
 
     /**
      * Get Feed Info

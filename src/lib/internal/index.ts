@@ -32,6 +32,8 @@ export type { PublicApplication } from './models/PublicApplication';
 export type { PublicFeed } from './models/PublicFeed';
 export type { PublicFeedListPatch } from './models/PublicFeedListPatch';
 export type { PublicPost } from './models/PublicPost';
+export type { ResolvedFeed } from './models/ResolvedFeed';
+export type { ResolveFeedOpts } from './models/ResolveFeedOpts';
 export type { RevokingAccessTokenRequest } from './models/RevokingAccessTokenRequest';
 export type { RevokingCompleted } from './models/RevokingCompleted';
 export type { RevokingRequiresAge } from './models/RevokingRequiresAge';

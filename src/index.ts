@@ -7,3 +7,4 @@ export * from './lib/oauth2';
 export * from './lib/sessions';
 export * from './lib/self';
 export * from './lib/users';
+export * from './lib/feeds';

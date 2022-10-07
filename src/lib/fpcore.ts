@@ -36,7 +36,7 @@ export function Just<T>(value: T): Maybe<T> {
 
 export const None: Maybe<never> = Left(undefined);
 
-type EitherMatcher<L, R, LN, RN> = {
+export type EitherMatcher<L, R, LN, RN> = {
   readonly left: (l: L) => LN;
   readonly right: (r: R) => RN;
 };

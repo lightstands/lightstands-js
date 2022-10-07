@@ -1,4 +1,9 @@
-import { AllRemoteErrors, ERROR_KEYS, OAuth2Error } from './errors';
+import {
+  AllRemoteErrors,
+  BadStateError,
+  ERROR_KEYS,
+  OAuth2Error,
+} from './errors';
 import {
   aeither,
   Either,
@@ -13,6 +18,8 @@ import {
   ApiError,
   CancelablePromise,
   DateTime,
+  PublicFeed as InternalPublicFeed,
+  PublicPost as InternalPublicPost,
   OpenAPI,
   PublicApplication,
   ServerPublicSettings,
@@ -22,6 +29,8 @@ import {
   AccessToken,
   App,
   ClientConfig,
+  PublicFeed,
+  PublicPost,
   PublicSettings,
   SessionAccess,
 } from './types';
@@ -162,4 +171,33 @@ export async function ensureOpenAPIEnv<R>(
   OpenAPI.BASE = client.endpointBase;
   OpenAPI.TOKEN = session?.accessToken;
   return await callback();
+}
+
+export function internalPublicFeedAdapter(o: InternalPublicFeed): PublicFeed {
+  return {
+    ref: o.ref,
+    url: o.url,
+    urlBlake3: o.url_blake3,
+    title: o.title,
+    link: o.link,
+    description: o.description,
+    updatedAt: o.updated_at,
+    lastFetchedAt: o.last_fetched_at,
+  };
+}
+
+export function internalPublicPostAdapter(o: InternalPublicPost): PublicPost {
+  return {
+    ref: o.ref,
+    id: o.id,
+    idBlake3: o.id_blake3,
+    publishedAt: o.published_at,
+    updatedAt: o.updated_at,
+    feedRef: o.feed_ref,
+    contentTypes: o.content_types,
+  };
+}
+
+export function unreachable(): never {
+  throw new BadStateError('unreachable');
 }

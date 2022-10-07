@@ -55,3 +55,27 @@ export type PublicUser = {
 export type PrivateUser = PublicUser & {
   readonly email?: string;
 };
+
+export type PublicFeed = {
+  readonly ref: number;
+  readonly url: string;
+  readonly urlBlake3: string;
+  readonly title?: string;
+  readonly link?: string;
+  readonly description?: string;
+  readonly updatedAt: number;
+  readonly lastFetchedAt: number;
+};
+
+export type PublicPost = {
+  readonly ref: number;
+  readonly id: string;
+  readonly idBlake3: string;
+  readonly title?: string;
+  readonly link?: string;
+  readonly publishedAt: number;
+  readonly updatedAt: number;
+  readonly summary?: string;
+  readonly feedRef: number;
+  readonly contentTypes: ReadonlyArray<string>;
+};

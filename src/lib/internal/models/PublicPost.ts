@@ -5,7 +5,7 @@
 export type PublicPost = {
     ref: number;
     id: string;
-    id_blake3: Blob;
+    id_blake3: string;
     title?: string;
     link?: string;
     published_at: number;

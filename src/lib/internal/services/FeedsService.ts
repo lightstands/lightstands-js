@@ -90,6 +90,7 @@ export class FeedsService {
                 'limit': limit,
             },
             errors: {
+                404: `Not Found`,
                 422: `Validation Error`,
             },
         });

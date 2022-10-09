@@ -71,6 +71,7 @@ export class FeedsService {
      * @param feedUrlBlake3
      * @param refGt
      * @param limit
+     * @param refLe
      * @returns FeedPosts Successful Response
      * @throws ApiError
      */
@@ -78,6 +79,7 @@ export class FeedsService {
         feedUrlBlake3: string,
         refGt?: number,
         limit: number = 16,
+        refLe?: number,
     ): CancelablePromise<FeedPosts> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -88,6 +90,7 @@ export class FeedsService {
             query: {
                 'ref_gt': refGt,
                 'limit': limit,
+                'ref_le': refLe,
             },
             errors: {
                 404: `Not Found`,

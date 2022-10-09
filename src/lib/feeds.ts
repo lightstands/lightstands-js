@@ -66,6 +66,12 @@ export type FeedPostListPage = {
   readonly posts: readonly PublicPost[];
 };
 
+export type PostCursorOpts = {
+  readonly refGt?: number;
+  readonly refLe?: number;
+  readonly limit?: number;
+};
+
 /** List the metadata of the posts of a feed.
  *
  * This function comes with two variants: `*Blake3` and `*ByUrl`.
@@ -74,17 +80,20 @@ export type FeedPostListPage = {
  *
  * @param client client config
  * @param feedUrlBlake3Base64 the urlsafe base64 blake3-hash of the feed url
- * @param refGt
- * @param limit the max number fetching, default to `16`
+ * @param cursorOpts.refGt result's `ref` should be greater than this number
+ * @param cursorOpts.refLe result's `ref` should be less than or equal to this number
+ * @param cursorOpts.limit the max number fetching, default to `16`
  * @returns NotFoundError or the page of the list
  */
 export async function getFeedPosts(
   client: ClientConfig,
   feedUrlBlake3Base64: string,
-  refGt?: number,
-  limit?: number,
+  cursorOpts: PostCursorOpts,
 ) {
-  if (typeof limit != 'undefined' && (limit > 128 || limit < 0)) {
+  if (
+    typeof cursorOpts.limit != 'undefined' &&
+    (cursorOpts.limit > 128 || cursorOpts.limit < 0)
+  ) {
     throw new RangeError('limit must between 0 to 128');
   }
   return ensureOpenAPIEnv(() => {
@@ -107,8 +116,9 @@ export async function getFeedPosts(
       wrapOpenAPI(
         FeedsService.getFeedPostsFeedsFeedUrlBlake3PostsGet(
           feedUrlBlake3Base64,
-          refGt,
-          limit,
+          cursorOpts.refGt,
+          cursorOpts.limit,
+          cursorOpts.refLe,
         ),
       ),
     );
@@ -119,24 +129,21 @@ export async function getFeedPosts(
 export function getFeedPostsBlake3(
   client: ClientConfig,
   feedUrlBlake3: Uint8Array,
-  refGt?: number,
-  limit?: number,
+  cursorOpts: PostCursorOpts,
 ) {
-  return getFeedPosts(client, encodeBase64(feedUrlBlake3), refGt, limit);
+  return getFeedPosts(client, encodeBase64(feedUrlBlake3), cursorOpts);
 }
 
 /** It's an variant of `getFeedPosts`, see the document for detail. */
 export async function getFeedPostsByUrl(
   client: ClientConfig,
   feedUrl: string,
-  refGt?: number,
-  limit?: number,
+  cursorOpts: PostCursorOpts,
 ) {
   return getFeedPostsBlake3(
     client,
     await blake3(string2utf8(feedUrl)),
-    refGt,
-    limit,
+    cursorOpts,
   );
 }
 

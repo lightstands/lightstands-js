@@ -195,6 +195,9 @@ export function internalPublicPostAdapter(o: InternalPublicPost): PublicPost {
     updatedAt: o.updated_at,
     feedRef: o.feed_ref,
     contentTypes: o.content_types,
+    title: o.title,
+    link: o.link,
+    summary: o.summary,
   };
 }
 

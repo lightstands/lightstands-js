@@ -46,17 +46,25 @@ export class FeedsService {
      * Possible RESTful errors:
      * - `notfound(feed_url)` 404
      * @param feedUrlBlake3
+     * @param ifModifiedSince
+     * @param ifNoneMatch
      * @returns PublicFeed Successful Response
      * @throws ApiError
      */
     public static getFeedInfoFeedsFeedUrlBlake3Get(
         feedUrlBlake3: string,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
     ): CancelablePromise<PublicFeed> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/feeds/{feed_url_blake3}/',
             path: {
                 'feed_url_blake3': feedUrlBlake3,
+            },
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
             },
             errors: {
                 404: `Not Found`,
@@ -172,12 +180,16 @@ export class FeedsService {
      * Get Post
      * @param feedUrlBlake3
      * @param postIdBlake3
+     * @param ifModifiedSince
+     * @param ifNoneMatch
      * @returns PublicPost Successful Response
      * @throws ApiError
      */
     public static getPostFeedsFeedUrlBlake3PostsPostIdBlake3Get(
         feedUrlBlake3: string,
         postIdBlake3: string,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
     ): CancelablePromise<PublicPost> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -185,6 +197,10 @@ export class FeedsService {
             path: {
                 'feed_url_blake3': feedUrlBlake3,
                 'post_id_blake3': postIdBlake3,
+            },
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
             },
             errors: {
                 422: `Validation Error`,

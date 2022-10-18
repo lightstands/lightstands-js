@@ -4,7 +4,7 @@ import { string2utf8 } from './crypto/util';
 import { NotFoundError } from './errors';
 import { aeither, Fork, Left, map, Right } from './fpcore';
 import { FeedsService } from './internal';
-import { ClientConfig } from './types';
+import { ClientConfig, SessionAccess } from './types';
 import { PublicFeed, PublicPost } from './types';
 import {
   ensureOpenAPIEnv,
@@ -239,29 +239,38 @@ export function getPost(
  * and the endpoint have 1 second delay for each call, it's recommended to set the timeout > 2s, or it may fail frequently.
  *
  * @param client client config
+ * @param session the session
  * @param url the url need resolving
  * @returns error or resolved `PublicFeed`
  */
-export function resolveFeed(client: ClientConfig, url: string) {
-  return ensureOpenAPIEnv(() => {
-    return aeither(
-      {
-        left(l) {
-          if (l.status == 400) {
-            return l;
-          } else {
-            throw l;
-          }
+export function resolveFeed(
+  client: ClientConfig,
+  session: SessionAccess,
+  url: string,
+) {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            if (l.status == 400) {
+              return l;
+            } else {
+              throw l;
+            }
+          },
+          right(r) {
+            return internalPublicFeedAdapter(r.feed);
+          },
         },
-        right(r) {
-          return internalPublicFeedAdapter(r.feed);
-        },
-      },
-      wrapOpenAPI(
-        FeedsService.resolveFeedFeedsResolvePost({
-          url,
-        }),
-      ),
-    );
-  }, client);
+        wrapOpenAPI(
+          FeedsService.resolveFeedFeedsResolvePost({
+            url,
+          }),
+        ),
+      );
+    },
+    client,
+    session,
+  );
 }

@@ -79,3 +79,33 @@ export type PublicPost = {
   readonly feedRef: number;
   readonly contentTypes: ReadonlyArray<string>;
 };
+
+export type FeedListAddItem = {
+  readonly euid: EUId;
+  readonly feedUrlHash: string;
+};
+
+export type EUId = number;
+
+export type FeedListChunk = {
+  readonly in: readonly FeedListAddItem[];
+  readonly rm: readonly EUId[];
+  readonly tags: readonly string[];
+};
+
+export type FeedListPatch = Partial<FeedListChunk> & {
+  readonly untags?: readonly string[];
+};
+
+export type FeedListDetail = FeedListChunk &
+  FeedListMetadata & {
+    readonly size: number;
+  };
+
+export type FeedListMetadata = {
+  readonly ownerId: number;
+  readonly id: number;
+  readonly createdAt: number;
+  readonly updatedAt: number;
+  readonly tags: readonly string[];
+};

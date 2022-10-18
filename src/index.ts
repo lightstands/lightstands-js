@@ -8,3 +8,4 @@ export * from './lib/sessions';
 export * from './lib/self';
 export * from './lib/users';
 export * from './lib/feeds';
+export * from './lib/feedlists';

@@ -42,6 +42,13 @@ export class ForbiddenError extends Error {
   }
 }
 
+export class InsufficientStorageError extends Error {
+  constructor(message?: string) {
+    super(message);
+    this.name = 'InsufficientStorageError';
+  }
+}
+
 export type AllRemoteErrors = {
   readonly bot?: string;
   readonly captcharequired?: string;

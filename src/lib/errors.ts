@@ -16,45 +16,114 @@ export class BadResponseError extends Error {
   }
 }
 
-export class NotFoundError extends Error {
+export class RemoteError extends Error {
+  readonly keys: readonly string[] | undefined;
+
+  constructor(name: string, message?: string, keys?: readonly string[]) {
+    super(message);
+    this.name = name;
+    this.keys = keys;
+  }
+
+  matchKeys(expected?: readonly string[]) {
+    return (
+      (typeof expected === 'undefined' && typeof this.keys === 'undefined') ||
+      (typeof expected !== 'undefined' &&
+        this.keys?.reduce(
+          (prev, curr, i) =>
+            prev && (expected.length > i ? curr === expected[i] : false),
+          true,
+        )) ||
+      false
+    );
+  }
+}
+
+export class NotFoundError extends RemoteError {
   readonly key?: string;
 
-  constructor(key?: string, message?: string) {
-    super(message);
-
-    this.name =
-      typeof key !== 'undefined' ? `NotFoundError(${key})` : 'NotFoundError';
-    this.key = key;
+  constructor(key?: string | readonly string[], message?: string) {
+    const name =
+      typeof key === 'string'
+        ? `NotFoundError(${key})`
+        : typeof key === 'undefined'
+        ? 'NotFoundError'
+        : `NotFoundError${key.join(',')}`;
+    const keys =
+      typeof key === 'string'
+        ? [key]
+        : typeof key === 'undefined'
+        ? undefined
+        : key;
+    super(name, message, keys);
   }
 }
 
-export class UnauthorizedError extends Error {
+export class UnauthorizedError extends RemoteError {
   constructor(message?: string) {
-    super(message);
-    this.name = 'UnauthorizedError';
+    super('UnauthorizedError', message);
   }
 }
 
-export class ForbiddenError extends Error {
+export class ForbiddenError extends RemoteError {
   constructor(message?: string) {
-    super(message);
-    this.name = 'ForbiddenError';
+    super('ForbiddenError', message);
   }
 }
 
-export class InsufficientStorageError extends Error {
+export class InsufficientStorageError extends RemoteError {
   constructor(message?: string) {
-    super(message);
-    this.name = 'InsufficientStorageError';
+    super('InsufficientStorageError', message);
   }
 }
 
-export type AllRemoteErrors = {
-  readonly bot?: string;
-  readonly captcharequired?: string;
+export class BotError extends RemoteError {
+  constructor(message?: string) {
+    super('BotError', message);
+  }
+}
+
+export class CaptchaRequiredError extends RemoteError {
+  constructor(message?: string) {
+    super('CaptchaRequiredError', message);
+  }
+}
+
+export class ConditionRequiresError extends RemoteError {
+  constructor(keys: readonly string[], message?: string) {
+    super('CondtionRequiresError', message, keys);
+  }
+}
+
+export const ERROR_KEY_REGEXP = /^([a-zA-Z0-9]+)(\([\S,]+\))?$/m;
+
+export function matchErrorDecl(
+  errordecl: string,
+): readonly [string, string | null] | null {
+  const match = ERROR_KEY_REGEXP.exec(errordecl);
+  if (match) {
+    return [match[1], match.length > 2 ? match[2] : null];
+  } else {
+    return null;
+  }
+}
+
+export type LightStandsErrorObject = {
+  readonly ok: boolean;
+  readonly errors: Record<string, string>;
 };
 
-export const ERROR_KEYS = ['bot', 'captcharequired'];
+export function isLightStandsError(
+  raw: unknown,
+): raw is LightStandsErrorObject {
+  if (typeof raw === 'object') {
+    const o = raw as Record<string, unknown>;
+    if (typeof o['ok'] === 'boolean' && typeof o['errors'] === 'object') {
+      return true;
+    }
+  }
+  return false;
+}
 
 export type OAuth2Error = {
   readonly error: string;

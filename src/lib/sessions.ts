@@ -1,5 +1,9 @@
-import { AllRemoteErrors, NotFoundError } from './errors';
-import { aeither, either, Fork, unwrap } from './fpcore';
+import {
+  ConditionRequiresError,
+  isLightStandsError,
+  NotFoundError,
+} from './errors';
+import { aeither, either, Fork } from './fpcore';
 import { ApiError, OpenAPI, SessionsService } from './internal';
 import {
   AccessToken,
@@ -12,7 +16,6 @@ import {
   date2DateTime,
   ensureOpenAPIEnv,
   internalAccessTokenAdaptor,
-  parseLightStandsError,
   wrapOpenAPI,
 } from './utils';
 
@@ -55,7 +58,7 @@ export async function newSession(
   userAgentId?: string,
   userAgent?: UserAgent,
   authCode?: string,
-): Fork<AllRemoteErrors, Session> {
+): Fork<NotFoundError | ConditionRequiresError, Session> {
   const result = await ensureOpenAPIEnv(
     () =>
       wrapOpenAPI(
@@ -73,7 +76,29 @@ export async function newSession(
   return either(
     {
       left: (err) => {
-        return unwrap(parseLightStandsError(err));
+        if (isLightStandsError(err.body)) {
+          const errors = err.body.errors;
+          if (errors['notfound(auth_code)']) {
+            return new NotFoundError(
+              'auth_code',
+              errors['notfound(auth_code)'],
+            );
+          } else if (errors['notfound(client_id)']) {
+            return new NotFoundError(
+              'client_id',
+              errors['notfound(client_id)'],
+            );
+          } else if (errors['conditionrequires(scope,access_token.scope)']) {
+            return new ConditionRequiresError(
+              ['scope', 'access_token.scope'],
+              errors['conditionrequires(scope,access_token.scope)'],
+            );
+          } else {
+            throw err;
+          }
+        } else {
+          throw err;
+        }
       },
       right: (val) => {
         return <Session>{
@@ -93,11 +118,24 @@ export async function newSessionByPassword(
   scope: string,
   userAgentId?: string,
   userAgent?: UserAgent,
-): Fork<AllRemoteErrors, Session> {
+): Fork<NotFoundError, Session> {
   OpenAPI.BASE = client.endpointBase;
   return aeither(
     {
-      left: (v) => unwrap(parseLightStandsError(v)),
+      left: (v) => {
+        if (isLightStandsError(v.body)) {
+          if (v.body.errors['notfound(username,password)']) {
+            return new NotFoundError(
+              ['username', 'password'],
+              v.body.errors['notfound(username,password)'],
+            );
+          } else {
+            throw v;
+          }
+        } else {
+          throw v;
+        }
+      },
       right: (v) => {
         return <Session>{
           accessToken: v.access_token.token,

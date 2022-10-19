@@ -1,19 +1,5 @@
-import {
-  AllRemoteErrors,
-  BadStateError,
-  ERROR_KEYS,
-  OAuth2Error,
-} from './errors';
-import {
-  aeither,
-  Either,
-  filter,
-  fold,
-  Fork,
-  Left,
-  Right,
-  wrap,
-} from './fpcore';
+import { BadStateError, OAuth2Error } from './errors';
+import { aeither, Either, Fork, Left, Right, wrap } from './fpcore';
 import {
   ApiError,
   CancelablePromise,
@@ -51,42 +37,6 @@ export function wrapOpenAPI<T>(
     },
     wrap(original),
   );
-}
-
-/** Read an error group from an `ApiError`.
- * Lightstands server software return error as an object, the error name is the key and the decription is the value.
- * This function will ignore unregonisable errors.
- * Still possible throw an error if the body of the `ApiError` is not a JSON.
- *
- * @param e the `ApiError` from internal API
- * @returns `Right<AllRemoteErrors>` if error group detected, `Left<ApiError>` the original error if failed
- */
-export function parseLightStandsError(
-  e: ApiError,
-): Either<ApiError, AllRemoteErrors> {
-  const body = JSON.parse(e.body);
-  if (
-    typeof body === 'object' &&
-    typeof body.ok === 'boolean' &&
-    typeof body.errors === 'object'
-  ) {
-    const keys = filter(
-      (key) => ERROR_KEYS.includes(key),
-      Object.keys(body.errors),
-    ) as Iterable<keyof AllRemoteErrors>;
-    return Right(
-      fold(
-        (prev, next) => ({
-          ...prev,
-          [next]: body.errors[next],
-        }),
-        <AllRemoteErrors>{},
-        keys,
-      ),
-    );
-  } else {
-    return Left(e);
-  }
 }
 
 /** Read an `OAuth2Error` from an `ApiError`.

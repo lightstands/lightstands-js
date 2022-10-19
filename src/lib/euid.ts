@@ -31,6 +31,12 @@ function byte2int20(randBytes: Uint8Array): Uint {
   );
 }
 
+/** Make a new EUId.
+ * It's recommended to use `randeuid` in usual cases.
+ * @param unixTimestamp the unix timestamp will be packing into the id, should be at least 2 ^ 30 - 1
+ * @param randBytes random data, at least 3 bytes
+ * @returns the EUId
+ */
 export function makeeuid(unixTimestamp: number, randBytes: Uint8Array): number {
   const mappedTs = fromNumber64(unixTimestamp).subtract(
     fromNumber64(TS_OFFSET),
@@ -42,16 +48,31 @@ export function makeeuid(unixTimestamp: number, randBytes: Uint8Array): number {
   return toNumberCUInt(result);
 }
 
+/** Extract the unix timestamp from an EUId.
+ *
+ * @param id the EUId
+ * @returns a unix timestamp
+ */
 export function inspectTimestamp(id: number): number {
   const id64 = fromNumber64(id);
   const ts = byteswap(id64.shiftRight(20));
   return toNumberCUInt(ts.add(fromNumber64(TS_OFFSET)));
 }
 
+/** A wrapper of `inspectTimestamp` to return a `Date` object.
+ *
+ * @param id the EUId
+ * @returns `Date` object
+ */
 export function inspectDate(id: number): Date {
   return new Date(inspectTimestamp(id) * 1000);
 }
 
+/** Generate an EUId with random data.
+ *
+ * @param unixTs the unix timestamp, use current time if not present.
+ * @returns the EUId
+ */
 export function randeuid(unixTs?: number): number {
   const rand = new Uint8Array(3);
   crypto.getRandomValues(rand);

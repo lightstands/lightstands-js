@@ -56,6 +56,12 @@ pre-commit install
 
 Maintainer: `Rubicon <rubicon lightstands.xyz>` (Replace the space with at symbol)
 
+## Versioning
+
+This library uses a strange versioning semantic, see [Versioning LightStands-JS](./docs/versioning.md).
+
+The version representation still follows "n.n.n", and it's safe to upgrade if the new version is only changed at the last number.
+
 ## License
 
 MIT License, see `LICENSE`.

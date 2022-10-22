@@ -123,7 +123,7 @@ export type CreationRequest = {
   readonly resolved: boolean;
 };
 
-export type SupportedCpatchaResponse = {
+export type SupportedCaptchaResponse = {
   readonly hCaptcha: string;
 };
 

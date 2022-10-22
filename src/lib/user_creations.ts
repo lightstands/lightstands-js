@@ -17,7 +17,7 @@ import {
   CreationRequest,
   CreationVerificationStatus,
   ResolvedCreationRequest,
-  SupportedCpatchaResponse,
+  SupportedCaptchaResponse,
 } from './types';
 import {
   creationRequestAdapter,
@@ -40,7 +40,7 @@ function creationRequestId2String(id: CreationRequestId): string {
 export function newCreationRequest(
   client: ClientConfig,
   requestId: CreationRequestId,
-  cpatcha: SupportedCpatchaResponse,
+  captcha: SupportedCaptchaResponse,
 ): Fork<BotError | CaptchaRequiredError | BadFormatError, CreationRequest> {
   return ensureOpenAPIEnv(() => {
     return aeither(
@@ -71,7 +71,7 @@ export function newCreationRequest(
         CreationRequestsService.putCreationRequestCreationRequestsReqIdPut(
           creationRequestId2String(requestId),
           {
-            h_captcha_response: cpatcha.hCaptcha,
+            h_captcha_response: captcha.hCaptcha,
           },
         ),
       ),

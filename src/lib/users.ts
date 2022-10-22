@@ -1,7 +1,18 @@
-import { ForbiddenError, NotFoundError, UnauthorizedError } from './errors';
+import {
+  ForbiddenError,
+  isLightStandsError,
+  NotFoundError,
+  UnauthorizedError,
+} from './errors';
 import { aeither, Fork } from './fpcore';
 import { UsersService } from './internal';
-import { ClientConfig, PrivateUser, PublicUser, Session } from './types';
+import {
+  ClientConfig,
+  PrivateUser,
+  PublicUser,
+  Session,
+  SessionAccess,
+} from './types';
 import { ensureOpenAPIEnv, wrapOpenAPI } from './utils';
 
 export function getUserPublicInfo(
@@ -66,6 +77,47 @@ export function getUserPrivateInfo(
           UsersService.getUserPrivateInformationUsersUseridPrivateGet(userid),
         ),
       ),
+    client,
+    session,
+  );
+}
+
+export function setUserPassword<P extends string | undefined>(
+  client: ClientConfig,
+  session: SessionAccess,
+  userId: number,
+  newPassword: P,
+): Fork<ForbiddenError | UnauthorizedError, P> {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            const body = l.body;
+            if (isLightStandsError(body)) {
+              const errors = body.errors;
+              if (errors['unauthorised']) {
+                return new UnauthorizedError(errors['unauthorised']);
+              } else if (errors['scopenotcovered(user.change_password)']) {
+                return new ForbiddenError(
+                  errors['scopenotcovered(user.change_password)'],
+                  ['user.change_password'],
+                );
+              }
+            }
+            throw l;
+          },
+          right() {
+            return newPassword;
+          },
+        },
+        wrapOpenAPI(
+          UsersService.changePasswordUsersUseridChangePasswordPost(userId, {
+            new_password: newPassword,
+          }),
+        ),
+      );
+    },
     client,
     session,
   );

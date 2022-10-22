@@ -66,8 +66,8 @@ export class UnauthorizedError extends RemoteError {
 }
 
 export class ForbiddenError extends RemoteError {
-  constructor(message?: string) {
-    super('ForbiddenError', message);
+  constructor(message?: string, keys?: readonly string[]) {
+    super('ForbiddenError', message, keys);
   }
 }
 

@@ -31,7 +31,7 @@ export type CreationRequestId = { readonly email: string };
 
 function creationRequestId2String(id: CreationRequestId): string {
   if (typeof id.email !== 'undefined') {
-    return `email@${id.email}`;
+    return `email,${id.email}`;
   } else {
     unreachable();
   }

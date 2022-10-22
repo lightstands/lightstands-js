@@ -95,6 +95,18 @@ export class ConditionRequiresError extends RemoteError {
   }
 }
 
+export class BadFormatError extends RemoteError {
+  constructor(keys: readonly string[], message?: string) {
+    super('BadFormatError', message, keys);
+  }
+}
+
+export class ExistsError extends RemoteError {
+  constructor(keys: readonly string[], message?: string) {
+    super('ExistsError', message, keys);
+  }
+}
+
 export const ERROR_KEY_REGEXP = /^([a-zA-Z0-9]+)(\([\S,]+\))?$/m;
 
 export function matchErrorDecl(

@@ -4,6 +4,7 @@ import {
   ApiError,
   CancelablePromise,
   DateTime,
+  UserPrivateCreationRequest as InternalCreationRequest,
   PublicFeed as InternalPublicFeed,
   PublicPost as InternalPublicPost,
   OpenAPI,
@@ -15,6 +16,7 @@ import {
   AccessToken,
   App,
   ClientConfig,
+  CreationRequest,
   PublicFeed,
   PublicPost,
   PublicSettings,
@@ -153,4 +155,17 @@ export function internalPublicPostAdapter(o: InternalPublicPost): PublicPost {
 
 export function unreachable(): never {
   throw new BadStateError('unreachable');
+}
+
+export function creationRequestAdapter(
+  o: InternalCreationRequest,
+): CreationRequest {
+  return {
+    identifier: o.identifier,
+    challengeFailedCounter: o.challenge_failed_counter,
+    createdAt: o.created_at,
+    requestVerificationCounter: o.request_verification_counter,
+    requestVerificationAt: o.request_verification_at,
+    resolved: o.resolved,
+  };
 }

@@ -22,6 +22,10 @@ export type AccessToken = {
   readonly userAgent?: UserAgent;
 };
 
+export type PrivateAccessToken = {
+  readonly token: string;
+};
+
 export type SessionAccess = {
   readonly accessToken: string;
 };
@@ -108,4 +112,34 @@ export type FeedListMetadata = {
   readonly createdAt: number;
   readonly updatedAt: number;
   readonly tags: readonly string[];
+};
+
+export type CreationRequest = {
+  readonly identifier: string;
+  readonly challengeFailedCounter: number;
+  readonly createdAt: number;
+  readonly requestVerificationAt?: number;
+  readonly requestVerificationCounter: number;
+  readonly resolved: boolean;
+};
+
+export type SupportedCpatchaResponse = {
+  readonly hCaptcha: string;
+};
+
+export type VerificationFailureReason =
+  | 'unsupported'
+  | 'not-required'
+  | 'throttled';
+
+export type CreationVerificationStatus = {
+  readonly request: CreationRequest;
+  readonly ok: boolean;
+  readonly reason?: string;
+};
+
+export type ResolvedCreationRequest = {
+  readonly creationRequest: CreationRequest;
+  readonly user: PrivateUser;
+  readonly accessToken: PrivateAccessToken;
 };

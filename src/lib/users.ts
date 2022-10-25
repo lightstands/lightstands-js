@@ -49,7 +49,7 @@ export function getUserPrivateInfo(
   client: ClientConfig,
   session: Session,
   userid: number,
-): Fork<NotFoundError | UnauthorizedError | ForbiddenError, PublicUser> {
+): Fork<NotFoundError | UnauthorizedError | ForbiddenError, PrivateUser> {
   return ensureOpenAPIEnv(
     () =>
       aeither(

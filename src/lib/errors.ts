@@ -107,6 +107,15 @@ export class ExistsError extends RemoteError {
   }
 }
 
+/** This error indicates that the user does not have access due a payment problem.
+ * For example, `goldenpassrequired` can be transformed to this error.
+ */
+export class PaymentRequiredError extends RemoteError {
+  constructor(message?: string) {
+    super('PaymentRequiredError', message);
+  }
+}
+
 export const ERROR_KEY_REGEXP = /^([a-zA-Z0-9]+)(\([\S,]+\))?$/m;
 
 export function matchErrorDecl(

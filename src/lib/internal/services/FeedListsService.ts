@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { FeedListMetaList } from '../models/FeedListMetaList';
+import type { NewFeedListOpts } from '../models/NewFeedListOpts';
 import type { PrivateFeedList } from '../models/PrivateFeedList';
 import type { PublicFeedListPatch } from '../models/PublicFeedListPatch';
 
@@ -10,6 +11,67 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class FeedListsService {
+
+    /**
+     * List Feed Lists
+     * List all feed lists this user can access.
+     *
+     * Requires scope "feedlist.list".
+     * @param limit
+     * @param afterId
+     * @returns FeedListMetaList Successful Response
+     * @throws ApiError
+     */
+    public static listFeedListsFeedlistsGet(
+        limit: number = 64,
+        afterId?: number,
+    ): CancelablePromise<FeedListMetaList> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/feedlists/',
+            query: {
+                'limit': limit,
+                'after_id': afterId,
+            },
+            errors: {
+                401: `Unauthorized`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Create Feed List
+     * Create a new feed list with `name` as the name.
+     *
+     * This endpoint receive almost identical arguments from "Patch Feed List".
+     * The creation will fail if the patched size reach the limit.
+     *
+     * Requires scope "feedlist.new". The creation of the second or later list requires golden pass access.
+     *
+     * Possible RESTful Errors:
+     * - `goldenpassrequired` (HTTP 402)
+     * - `reachsizelimit` (HTTP 507)
+     * - `unauthorized` (HTTP 401)
+     * @param requestBody
+     * @returns PrivateFeedList Successful Response
+     * @throws ApiError
+     */
+    public static createFeedListFeedlistsPut(
+        requestBody: NewFeedListOpts,
+    ): CancelablePromise<PrivateFeedList> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/feedlists/',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
+                422: `Validation Error`,
+                507: `Insufficient Storage`,
+            },
+        });
+    }
 
     /**
      * Get Feed List
@@ -68,34 +130,6 @@ export class FeedListsService {
                 401: `Unauthorized`,
                 422: `Validation Error`,
                 507: `Insufficient Storage`,
-            },
-        });
-    }
-
-    /**
-     * List Feed Lists
-     * List all feed lists this user can access.
-     *
-     * Requires scope "feedlist.list".
-     * @param limit
-     * @param afterId
-     * @returns FeedListMetaList Successful Response
-     * @throws ApiError
-     */
-    public static listFeedListsFeedlistsGet(
-        limit: number = 64,
-        afterId?: number,
-    ): CancelablePromise<FeedListMetaList> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/feedlists/',
-            query: {
-                'limit': limit,
-                'after_id': afterId,
-            },
-            errors: {
-                401: `Unauthorized`,
-                422: `Validation Error`,
             },
         });
     }

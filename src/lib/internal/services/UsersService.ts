@@ -16,9 +16,10 @@ export class UsersService {
      * Change password for a user. A user can change it's password.
      * Requires scope: `user.change_password`.
      *
-     * Possible errors:
-     * - `unauthorised`
-     * - `scopenotcovered(user.change_password)`
+     * Possible RPC errors:
+     * - `unauthorised` (HTTP 403)
+     * - `scopenotcovered(user.change_password)` (HTTP 401)
+     * - `badformat(new_password)` (HTTP 400)
      * @param userid
      * @param requestBody
      * @returns void
@@ -37,6 +38,7 @@ export class UsersService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
+                400: `Bad Request`,
                 401: `Unauthorized`,
                 403: `Forbidden`,
                 422: `Validation Error`,

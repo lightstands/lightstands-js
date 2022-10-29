@@ -23,6 +23,7 @@ export type { DateTime } from './models/DateTime';
 export type { FeedListMetaList } from './models/FeedListMetaList';
 export type { FeedPosts } from './models/FeedPosts';
 export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { NewFeedListOpts } from './models/NewFeedListOpts';
 export type { OAuth2ErrorResponse } from './models/OAuth2ErrorResponse';
 export type { PasswordAccessTokenCreating } from './models/PasswordAccessTokenCreating';
 export type { PasswordChangeRequest } from './models/PasswordChangeRequest';

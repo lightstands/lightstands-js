@@ -19,15 +19,16 @@ export class CreationRequestsService {
 
     /**
      * Put Creation Request
-     * Request user creation (or registration) process. The `req_id` should be in format "\<verification_kind\>:\<verification_identity\>".
+     * Request user creation (or registration) process. The `req_id` should be in format "\<verification_kind\>,\<verification_identity\>".
      *
      * Supported verification kind(s):
      * - `email`: the identity should be the email address
      *
-     * Possible Restful errors:
+     * Possible RESTful errors:
      * - `badformat(req_id)`: the format of `req_id` could not be recognised. (HTTP 400)
      * - `bot`: You are being detected as a bot. (HTTP 403)
      * - `hcaptcharequired`: This endpoint requires hcaptcha verification. (HTTP 403)
+     * - `cancel`: the request is cancelled by server due the configuration. (HTTP 503)
      * @param reqId
      * @param requestBody
      * @returns CreationRequestCreated Successful Response
@@ -91,9 +92,12 @@ export class CreationRequestsService {
      * Resolve Creation Request
      * Try to resolve the creation request.
      *
-     * Possible errors:
-     * - `notfound(req_id)`
-     * - `exists(username)`
+     * Possible RESTful errors:
+     * - `notfound(req_id)` (HTTP 404)
+     *
+     * Possible RPC erros:
+     * - `exists(username)` (HTTP 409)
+     * - `badformat(username)` (HTTP 400)
      * @param reqId
      * @param requestBody
      * @returns any Successful Response
@@ -112,6 +116,7 @@ export class CreationRequestsService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
+                400: `Bad Request`,
                 404: `Not Found`,
                 409: `Conflict`,
                 422: `Validation Error`,

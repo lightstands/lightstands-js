@@ -147,6 +147,10 @@ export async function getFeedPostsByUrl(
   );
 }
 
+function concatURI(base: string, path: string): string {
+  return `${base}/${path}`;
+}
+
 /** Fetch content from remote.
  *
  * Platform must support [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to use this function.
@@ -167,10 +171,12 @@ export async function fetchContent(
   } = {},
 ): Fork<NotFoundError, Response> {
   const url = new URL(
-    `feeds/${encodeURIComponent(
-      feedUrlBlake3Base64,
-    )}/posts/${encodeURIComponent(postIdBlake3Base64)}/content`,
-    client.endpointBase,
+    concatURI(
+      client.endpointBase,
+      `feeds/${encodeURIComponent(
+        feedUrlBlake3Base64,
+      )}/posts/${encodeURIComponent(postIdBlake3Base64)}/content`,
+    ),
   );
   const contentType = opts.contentType || '*/*';
   const acceptLangs = opts.langs

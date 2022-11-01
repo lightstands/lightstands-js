@@ -2,6 +2,8 @@ import {
   ConditionRequiresError,
   isLightStandsError,
   NotFoundError,
+  RemoteError,
+  UnauthorizedError,
 } from './errors';
 import { aeither, either, Fork } from './fpcore';
 import { ApiError, OpenAPI, SessionsService } from './internal';
@@ -189,5 +191,106 @@ export async function refreshSession(
         },
       ),
     ),
+  );
+}
+
+/**
+ * Revoke the session.
+ * Use `revokeSessionByRefreshToken` if you need to revoke session using refresh token.
+ * @param client the client config
+ * @param targetSession the session should be revoking
+ * @returns AccessToken if success.
+ */
+export function revokeSession(
+  client: ClientConfig,
+  targetSession: SessionAccess,
+): Fork<NotFoundError | UnauthorizedError, AccessToken> {
+  return ensureOpenAPIEnv(() => {
+    return aeither(
+      {
+        left(l) {
+          const body = l.body;
+          if (isLightStandsError(body)) {
+            if (body.errors['notfound(token_type,token)']) {
+              return new NotFoundError(['token_type', 'token']);
+            } else if (body.errors['unauthorized']) {
+              return new UnauthorizedError(body.errors['unauthorized']);
+            }
+          }
+          throw l;
+        },
+        right(r) {
+          return internalAccessTokenAdaptor(r.access_token);
+        },
+      },
+      wrapOpenAPI(
+        SessionsService.revokeSessionAccessTokensRevokePost({
+          token_type: 'access_token',
+          token: targetSession.accessToken,
+        }),
+      ),
+    );
+  }, client);
+}
+
+export class SessionAgeError extends RemoteError {
+  constructor() {
+    super('SessionAgeError');
+  }
+}
+
+/**
+ * Revoke a session by refresh token.
+ * To revoke another session, your:
+ * - current session must be active, or got a `UnauthorizedError`;
+ * - current session must be created at least 24 hours, or got a `SessionAgeError`;
+ * - current session must have scope `session.revoke_other`, or got a `UnauthorizedError`;
+ * - the target session must be exists, or got a `NotFoundError`.
+ * @param client the client config
+ * @param session your current session
+ * @param refreshToken the refresh token of the session you are revoking.
+ * @returns AccessToken if success.
+ */
+export function revokeSessionByRefreshToken(
+  client: ClientConfig,
+  session: SessionAccess,
+  refreshToken: string,
+): Fork<SessionAgeError | NotFoundError | UnauthorizedError, AccessToken> {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            const body = l.body;
+            if (isLightStandsError(body)) {
+              const errors = body.errors;
+              if (errors['conditionrequires(token_type,token,created_at)']) {
+                return new SessionAgeError();
+              } else if (errors['notfound(token_type,token)']) {
+                return new NotFoundError('token_type', 'token');
+              } else if (errors['unauthorized']) {
+                return new UnauthorizedError(errors['unauthorized']);
+              } else if (errors['scopenotcovered(session.revoke_other)']) {
+                return new UnauthorizedError(
+                  errors['scopenotcovered(session.revoke_other)'],
+                );
+              }
+            }
+            throw l;
+          },
+          right(r) {
+            return internalAccessTokenAdaptor(r.access_token);
+          },
+        },
+        wrapOpenAPI(
+          SessionsService.revokeSessionAccessTokensRevokePost({
+            token_type: 'refresh_token',
+            token: refreshToken,
+          }),
+        ),
+      );
+    },
+    client,
+    session,
   );
 }

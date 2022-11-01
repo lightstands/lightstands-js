@@ -48,7 +48,8 @@
       }
     ],
     "functional/no-throw-statement": "off",
-    "functional/immutable-data": "off"
+    "functional/immutable-data": "off",
+    "functional/no-class": "off"
   },
   "overrides": [
     {
@@ -61,7 +62,6 @@
     {
       "files": ["src/lib/errors.ts"],
       "rules": {
-        "functional/no-class": "off",
         "functional/no-this-expression": "off"
       }
     },

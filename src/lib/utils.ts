@@ -94,6 +94,7 @@ export function internalPublicSettingsAdapter(
     apiLayerVersion: obj.api_layer_version,
     hcaptchaSiteKey: obj.hcaptcha_site_key,
     quote: obj.quote,
+    acceptUserCreationRequests: obj.accept_creation_requests,
   };
 }
 

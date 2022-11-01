@@ -49,6 +49,7 @@ export type PublicSettings = {
   readonly apiLayerVersion: number;
   readonly hcaptchaSiteKey?: string;
   readonly quote: string;
+  readonly acceptUserCreationRequests: boolean;
 };
 
 export type PublicUser = {

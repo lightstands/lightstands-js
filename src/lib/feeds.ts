@@ -70,6 +70,9 @@ export type PostCursorOpts = {
   readonly refGt?: number;
   readonly refLe?: number;
   readonly limit?: number;
+  readonly pubSince?: number;
+  readonly pubBefore?: number;
+  readonly pubOrder?: 'asc' | 'desc';
 };
 
 /** List the metadata of the posts of a feed.
@@ -80,9 +83,12 @@ export type PostCursorOpts = {
  *
  * @param client client config
  * @param feedUrlBlake3Base64 the urlsafe base64 blake3-hash of the feed url
- * @param cursorOpts.refGt result's `ref` should be greater than this number
- * @param cursorOpts.refLe result's `ref` should be less than or equal to this number
+ * @param cursorOpts.refGt result's `ref` should be greater than this number, deprecated
+ * @param cursorOpts.refLe result's `ref` should be less than or equal to this number, deprecated
  * @param cursorOpts.limit the max number fetching, default to `16`
+ * @param cursorOpts.pubSince result's `published_at` should be greater than or equal to this number.
+ * @param cursorOpts.pubBefore result's `published_at` should be less than this number.
+ * @param cursorOpts.pubOrder the order of the posts, the default is "desc".
  * @returns NotFoundError or the page of the list
  */
 export async function getFeedPosts(
@@ -119,6 +125,10 @@ export async function getFeedPosts(
           cursorOpts.refGt,
           cursorOpts.limit,
           cursorOpts.refLe,
+          cursorOpts.pubOrder,
+          undefined,
+          cursorOpts.pubSince,
+          cursorOpts.pubBefore,
         ),
       ),
     );

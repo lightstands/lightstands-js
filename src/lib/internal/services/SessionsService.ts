@@ -30,7 +30,9 @@ export class SessionsService {
      * Possible RPC errors:
      * - `conditionrequires(token_type,token,created_at)`
      * - `badformat(token_type)`
-     * - `notfound(token_type,token)`
+     * - `notfound(token_type,token)` (HTTP 404)
+     * - `unauthorized` (HTTP 401)
+     * - `scopenotcovered(session.revoke_other)` (HTTP 403)
      * @param requestBody
      * @returns RevokingCompleted Successful Response
      * @throws ApiError

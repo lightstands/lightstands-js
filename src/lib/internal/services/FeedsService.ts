@@ -76,10 +76,22 @@ export class FeedsService {
     /**
      * Get Feed Posts
      * List posts of the feed.
+     *
+     * `pub_since` and `pub_before` are unix timestamps in seconds, to query specific ranges of the posts which published at.
+     *
+     * Changed in 0.3: the selector starting by `ref_` is deprecated.
+     * LightStands Server Software does not promise the ref number order is time-dependent.
+     * They will be removed in 0.4.
      * @param feedUrlBlake3
      * @param refGt
      * @param limit
      * @param refLe
+     * @param pubOrder
+     * @param refGe
+     * @param pubSince
+     * @param pubBefore
+     * @param ifModifiedSince
+     * @param ifNoneMatch
      * @returns FeedPosts Successful Response
      * @throws ApiError
      */
@@ -88,6 +100,12 @@ export class FeedsService {
         refGt?: number,
         limit: number = 16,
         refLe?: number,
+        pubOrder?: ('asc' | 'desc'),
+        refGe?: number,
+        pubSince?: number,
+        pubBefore?: number,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
     ): CancelablePromise<FeedPosts> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -95,10 +113,18 @@ export class FeedsService {
             path: {
                 'feed_url_blake3': feedUrlBlake3,
             },
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
+            },
             query: {
                 'ref_gt': refGt,
                 'limit': limit,
                 'ref_le': refLe,
+                'pub_order': pubOrder,
+                'ref_ge': refGe,
+                'pub_since': pubSince,
+                'pub_before': pubBefore,
             },
             errors: {
                 404: `Not Found`,

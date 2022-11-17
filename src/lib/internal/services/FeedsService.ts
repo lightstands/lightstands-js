@@ -1,7 +1,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch } from '../models/Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch';
 import type { FeedPosts } from '../models/FeedPosts';
+import type { PostTagList } from '../models/PostTagList';
 import type { PublicFeed } from '../models/PublicFeed';
 import type { PublicPost } from '../models/PublicPost';
 import type { ResolvedFeed } from '../models/ResolvedFeed';
@@ -228,6 +230,91 @@ export class FeedsService {
                 'if-modified-since': ifModifiedSince,
                 'if-none-match': ifNoneMatch,
             },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Post Tags
+     * Get one user's tags for one post.
+     *
+     * Requires `tags.read` scope.
+     *
+     * Possible RESTful Errors:
+     * - `notfound(feed_url_blake3)`(HTTP 404)
+     * - `notfound(feed_url_blake3, post_id_blake3)`(HTTP 404)
+     * - `unauthorised` (HTTP 401)
+     * @param feedUrlBlake3
+     * @param postIdBlake3
+     * @param userid
+     * @param ifModifiedSince
+     * @param ifNoneMatch
+     * @returns PostTagList Successful Response
+     * @throws ApiError
+     */
+    public static getPostTagsFeedsFeedUrlBlake3PostsPostIdBlake3TagsOfUseridGet(
+        feedUrlBlake3: string,
+        postIdBlake3: string,
+        userid: number,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
+    ): CancelablePromise<PostTagList> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/feeds/{feed_url_blake3}/posts/{post_id_blake3}/tags-of/{userid}/',
+            path: {
+                'feed_url_blake3': feedUrlBlake3,
+                'post_id_blake3': postIdBlake3,
+                'userid': userid,
+            },
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Patch Post Tags
+     * Tag or untag a post for a user.
+     *
+     * Supported tags:
+     * - `_read` (the read status of a post)
+     *
+     * Requires `tags.write` scope.
+     *
+     * Possible RESTful Errors:
+     * - `notfound(feed_url_blake3)`(HTTP 404)
+     * - `notfound(feed_url_blake3, post_id_blake3)`(HTTP 404)
+     * - `unauthorised` (HTTP 401)
+     * @param feedUrlBlake3
+     * @param postIdBlake3
+     * @param userid
+     * @param requestBody
+     * @returns void
+     * @throws ApiError
+     */
+    public static patchPostTagsFeedsFeedUrlBlake3PostsPostIdBlake3TagsOfUseridPatch(
+        feedUrlBlake3: string,
+        postIdBlake3: string,
+        userid: number,
+        requestBody?: Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/feeds/{feed_url_blake3}/posts/{post_id_blake3}/tags-of/{userid}/',
+            path: {
+                'feed_url_blake3': feedUrlBlake3,
+                'post_id_blake3': postIdBlake3,
+                'userid': userid,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },

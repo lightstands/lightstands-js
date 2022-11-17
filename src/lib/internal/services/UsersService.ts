@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { PasswordChangeRequest } from '../models/PasswordChangeRequest';
 import type { UserPrivateInformation } from '../models/UserPrivateInformation';
+import type { UserPrivateReadTagList } from '../models/UserPrivateReadTagList';
 import type { UserPublicInformation } from '../models/UserPublicInformation';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -97,6 +98,43 @@ export class UsersService {
             url: '/users/{userid}/private',
             path: {
                 'userid': userid,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * List Read Tags
+     * List read tags the user created.
+     *
+     * Requires `tags.read` scope.
+     *
+     * Possible RESTful errors:
+     * - `unauthorized` (HTTP 401)
+     * @param userid
+     * @param updatedSince
+     * @param limit
+     * @returns UserPrivateReadTagList Successful Response
+     * @throws ApiError
+     */
+    public static listReadTagsUsersUseridTagsReadGet(
+        userid: number,
+        updatedSince?: number,
+        limit: number = 64,
+    ): CancelablePromise<UserPrivateReadTagList> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{userid}/tags/_read',
+            path: {
+                'userid': userid,
+            },
+            query: {
+                'updated_since': updatedSince,
+                'limit': limit,
             },
             errors: {
                 401: `Unauthorized`,

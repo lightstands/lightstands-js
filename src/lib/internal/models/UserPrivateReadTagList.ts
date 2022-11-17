@@ -2,10 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { UserPrivatePostTag } from './UserPrivatePostTag';
+
 export type UserPrivateReadTagList = {
     number: number;
     tag: string;
-    has_next: number;
-    post_refs: Array<number>;
+    has_next: boolean;
+    tags: Array<UserPrivatePostTag>;
 };
 

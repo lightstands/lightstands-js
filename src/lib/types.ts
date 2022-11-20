@@ -144,3 +144,11 @@ export type ResolvedCreationRequest = {
   readonly user: PrivateUser;
   readonly accessToken: PrivateAccessToken;
 };
+
+export type PostTag = {
+  readonly tag: string;
+  readonly postRef: number;
+  readonly createdAt: number;
+  readonly updatedAt: number;
+  readonly untaggedAt?: number;
+};

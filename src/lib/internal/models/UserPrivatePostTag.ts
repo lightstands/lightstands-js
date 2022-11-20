@@ -7,5 +7,6 @@ export type UserPrivatePostTag = {
     post_ref: number;
     created_at: number;
     updated_at: number;
+    untagged_at?: number;
 };
 

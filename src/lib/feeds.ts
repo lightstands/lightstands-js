@@ -1,10 +1,10 @@
 import { encodeBase64 } from './crypto/base64';
 import { blake3 } from './crypto/blake3';
 import { string2utf8 } from './crypto/util';
-import { NotFoundError } from './errors';
+import { isLightStandsError, NotFoundError, UnauthorizedError } from './errors';
 import { aeither, Fork, Left, map, Right } from './fpcore';
 import { FeedsService } from './internal';
-import { ClientConfig, SessionAccess } from './types';
+import { ClientConfig, PostTag, SessionAccess } from './types';
 import { PublicFeed, PublicPost } from './types';
 import {
   ensureOpenAPIEnv,
@@ -283,6 +283,136 @@ export function resolveFeed(
           FeedsService.resolveFeedFeedsResolvePost({
             url,
           }),
+        ),
+      );
+    },
+    client,
+    session,
+  );
+}
+
+/** Get the tags of one post.
+ *
+ * Note: the existing tag object does not mean the tag is tagging, please check if the `untagged_at` is greater or equal to `created_at`.
+ * If the condition true, the tag is untagged. This behaviour is meant for the application synchronising the tags.
+ *
+ * @param client the client config
+ * @param session the session
+ * @param userId the user id owns the tags
+ * @param feedUrlBlake3Base64 the feed url blake3 base64
+ * @param postIdBlake3Base64 the post id blake3 base64
+ */
+export function getPostTags(
+  client: ClientConfig,
+  session: SessionAccess,
+  userId: number,
+  feedUrlBlake3Base64: string,
+  postIdBlake3Base64: string,
+) {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            if (l.status === 401) {
+              return new UnauthorizedError();
+            } else {
+              const body = l.body;
+              if (isLightStandsError(body)) {
+                const errors = body.errors;
+                if (errors['notfound(feed_url_blake3)']) {
+                  return new NotFoundError('feed_url_blake3');
+                } else if (errors['notfound(feed_url_blake3,post_id_blake3)']) {
+                  return new NotFoundError('feed_url_blake3', 'post_id_blake3');
+                }
+              }
+            }
+            throw l;
+          },
+          right(r): readonly PostTag[] {
+            return r.tags.map((v) => {
+              return {
+                postRef: v.post_ref,
+                updatedAt: v.updated_at,
+                createdAt: v.created_at,
+                tag: v.tag,
+                untaggedAt: v.untagged_at,
+              };
+            });
+          },
+        },
+        wrapOpenAPI(
+          FeedsService.getPostTagsFeedsFeedUrlBlake3PostsPostIdBlake3TagsOfUseridGet(
+            feedUrlBlake3Base64,
+            postIdBlake3Base64,
+            userId,
+          ),
+        ),
+      );
+    },
+    client,
+    session,
+  );
+}
+
+/** Patch the tags for one post.
+ *
+ * Note: At the moment, Lightstands Server Software only supports `_read` tag for posts.
+ *
+ * @param client the client config
+ * @param session the session
+ * @param userId the user id you patched for
+ * @param feedUrlBlake3Base64 the feed url blake3 base64
+ * @param postIdBlake3Base64 the post id blake3 base64
+ * @param patch.tag tagging the tags
+ * @param patch.untag untagging the tags
+ */
+export function patchPostTags(
+  client: ClientConfig,
+  session: SessionAccess,
+  userId: number,
+  feedUrlBlake3Base64: string,
+  postIdBlake3Base64: string,
+  patch: {
+    // eslint-disable-next-line functional/prefer-readonly-type
+    readonly tag?: string[];
+    // eslint-disable-next-line functional/prefer-readonly-type
+    readonly untag?: string[];
+  },
+) {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            if (l.status === 401) {
+              return new UnauthorizedError();
+            } else {
+              const body = l.body;
+              if (isLightStandsError(body)) {
+                const errors = body.errors;
+                if (errors['notfound(feed_url_blake3)']) {
+                  return new NotFoundError('feed_url_blake3');
+                } else if (errors['notfound(feed_url_blake3,post_id_blake3)']) {
+                  return new NotFoundError('feed_url_blake3', 'post_id_blake3');
+                }
+              }
+            }
+            throw l;
+          },
+          // eslint-disable-next-line functional/no-return-void, @typescript-eslint/no-empty-function
+          right() {},
+        },
+        wrapOpenAPI(
+          FeedsService.patchPostTagsFeedsFeedUrlBlake3PostsPostIdBlake3TagsOfUseridPatch(
+            feedUrlBlake3Base64,
+            postIdBlake3Base64,
+            userId,
+            {
+              tag: patch.tag,
+              untag: patch.untag,
+            },
+          ),
         ),
       );
     },

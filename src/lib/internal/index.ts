@@ -49,6 +49,7 @@ export type { UserPrivateAccessToken } from './models/UserPrivateAccessToken';
 export type { UserPrivateAccessTokenWithoutToken } from './models/UserPrivateAccessTokenWithoutToken';
 export type { UserPrivateCreationRequest } from './models/UserPrivateCreationRequest';
 export type { UserPrivateInformation } from './models/UserPrivateInformation';
+export type { UserPrivatePostTag } from './models/UserPrivatePostTag';
 export type { UserPrivateReadTagList } from './models/UserPrivateReadTagList';
 export type { UserPrivateUser } from './models/UserPrivateUser';
 export type { UserPublicInformation } from './models/UserPublicInformation';

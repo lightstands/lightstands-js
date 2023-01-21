@@ -1,12 +1,12 @@
-import { fromUint8Array, toUint8Array } from 'js-base64';
+import { base64url } from 'rfc4648';
 
 /** Encode `Uint8Array` into url-safe base64 coding.
  *
  * @param src
  * @returns
  */
-export function encodeBase64(src: Uint8Array): string {
-  return fromUint8Array(src, true);
+export function encodeBase64(src: ArrayLike<number>): string {
+  return base64url.stringify(src);
 }
 
 /** Decode base64 string.
@@ -15,5 +15,5 @@ export function encodeBase64(src: Uint8Array): string {
  * @returns
  */
 export function decodeBase64(src: string): Uint8Array {
-  return toUint8Array(src);
+  return base64url.parse(src);
 }

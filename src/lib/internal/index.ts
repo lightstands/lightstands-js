@@ -13,6 +13,8 @@ export type { APIResErrBase } from './models/APIResErrBase';
 export type { AuthorizationCodeResponse } from './models/AuthorizationCodeResponse';
 export type { Body_oauth2_exchange_access_token_oauth2__token_post } from './models/Body_oauth2_exchange_access_token_oauth2__token_post';
 export type { Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch } from './models/Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch';
+export type { Body_patch_read_tags_for_user_users__userid__tags__read_patch } from './models/Body_patch_read_tags_for_user_users__userid__tags__read_patch';
+export type { Body_write_session_scope_by_refresh_token_access_tokens_specific__ref_tok__scope_post } from './models/Body_write_session_scope_by_refresh_token_access_tokens_specific__ref_tok__scope_post';
 export type { ChallengeAnswer } from './models/ChallengeAnswer';
 export type { ChallengeCheck } from './models/ChallengeCheck';
 export type { CreationRequest } from './models/CreationRequest';
@@ -23,6 +25,8 @@ export type { CreationRequestUnresolved } from './models/CreationRequestUnresolv
 export type { DateTime } from './models/DateTime';
 export type { FeedListMetaList } from './models/FeedListMetaList';
 export type { FeedPosts } from './models/FeedPosts';
+export type { FetchLogChunk } from './models/FetchLogChunk';
+export type { FetchLogEntry } from './models/FetchLogEntry';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { NewFeedListOpts } from './models/NewFeedListOpts';
 export type { OAuth2ErrorResponse } from './models/OAuth2ErrorResponse';

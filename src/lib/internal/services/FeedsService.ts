@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch } from '../models/Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch';
 import type { FeedPosts } from '../models/FeedPosts';
+import type { FetchLogChunk } from '../models/FetchLogChunk';
 import type { PostTagList } from '../models/PostTagList';
 import type { PublicFeed } from '../models/PublicFeed';
 import type { PublicPost } from '../models/PublicPost';
@@ -316,6 +317,42 @@ export class FeedsService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Feed Fetch Logs
+     * Get recent fetching logs for specific feed.
+     *
+     * Note. LightStands Server Software only store days of logs.
+     *
+     * Possible RESTful errors:
+     * - `notfound(feed_url_blake3)` (HTTP 404)
+     * @param feedUrlBlake3
+     * @param ifModifiedSince
+     * @param ifNoneMatch
+     * @returns FetchLogChunk Successful Response
+     * @throws ApiError
+     */
+    public static getFeedFetchLogsFeedsFeedUrlBlake3FetchLogsGet(
+        feedUrlBlake3: string,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
+    ): CancelablePromise<FetchLogChunk> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/feeds/{feed_url_blake3}/fetch-logs',
+            path: {
+                'feed_url_blake3': feedUrlBlake3,
+            },
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
+            },
+            errors: {
+                404: `Not Found`,
                 422: `Validation Error`,
             },
         });

@@ -18,6 +18,10 @@ export class Oauth2Service {
      * LightStands APIs will try to assign same session for same user agent identity,
      * which can help to against some browsers that frequently removes the local storages.
      *
+     * `ref_tok` is an optional refresh token. When this field specified,
+     * the authorization process will not create a new token, but authorize the original token.
+     * The token must have been created under the application of `client_id`.
+     *
      * OAuth 2 PKCE extension is required for LightStands OAuth 2 process.
      *
      * This endpoint will redirect the user to LightStands' web application to complete authorization.
@@ -49,6 +53,9 @@ export class Oauth2Service {
      * @param codeChallengeMethod
      * @param state
      * @param uaId
+     * @param refTok
+     * @param ifModifiedSince
+     * @param ifNoneMatch
      * @returns void
      * @throws ApiError
      */
@@ -61,10 +68,17 @@ export class Oauth2Service {
         codeChallengeMethod: string,
         state?: string,
         uaId?: string,
+        refTok?: string,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
     ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/oauth2/~authorize',
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
+            },
             query: {
                 'response_type': responseType,
                 'client_id': clientId,
@@ -74,6 +88,7 @@ export class Oauth2Service {
                 'code_challenge_method': codeChallengeMethod,
                 'state': state,
                 'ua_id': uaId,
+                'ref_tok': refTok,
             },
             errors: {
                 302: `Successful Response`,
@@ -97,15 +112,23 @@ export class Oauth2Service {
      * HTTP status 401 will be returned if the request encounter an unrealiable state:
      * - `invalid_client`: the application have been exists, but currently is unavaliable (deleted or wrong secret)
      * @param formData
+     * @param ifModifiedSince
+     * @param ifNoneMatch
      * @returns AuthorizationCodeResponse Successful Response
      * @throws ApiError
      */
     public static oauth2ExchangeAccessTokenOauth2TokenPost(
         formData: Body_oauth2_exchange_access_token_oauth2__token_post,
+        ifModifiedSince?: string,
+        ifNoneMatch?: string,
     ): CancelablePromise<AuthorizationCodeResponse> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/oauth2/~token',
+            headers: {
+                'if-modified-since': ifModifiedSince,
+                'if-none-match': ifNoneMatch,
+            },
             formData: formData,
             mediaType: 'application/x-www-form-urlencoded',
             errors: {

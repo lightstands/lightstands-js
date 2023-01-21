@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Body_patch_read_tags_for_user_users__userid__tags__read_patch } from '../models/Body_patch_read_tags_for_user_users__userid__tags__read_patch';
 import type { PasswordChangeRequest } from '../models/PasswordChangeRequest';
 import type { UserPrivateInformation } from '../models/UserPrivateInformation';
 import type { UserPrivateReadTagList } from '../models/UserPrivateReadTagList';
@@ -136,6 +137,38 @@ export class UsersService {
                 'updated_since': updatedSince,
                 'limit': limit,
             },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Patch Read Tags For User
+     * Patch the read tags of one users.
+     *
+     * Elements in `tag` and `untag` should be post refs, non-exists refs will be sliently ignored.
+     *
+     * Requires "tag.write" scope.
+     * @param userid
+     * @param requestBody
+     * @returns void
+     * @throws ApiError
+     */
+    public static patchReadTagsForUserUsersUseridTagsReadPatch(
+        userid: number,
+        requestBody?: Body_patch_read_tags_for_user_users__userid__tags__read_patch,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/users/{userid}/tags/_read',
+            path: {
+                'userid': userid,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,

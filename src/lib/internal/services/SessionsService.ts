@@ -3,6 +3,7 @@
 /* eslint-disable */
 import type { AccessTokenCreated } from '../models/AccessTokenCreated';
 import type { AccessTokenResult } from '../models/AccessTokenResult';
+import type { Body_write_session_scope_by_refresh_token_access_tokens_specific__ref_tok__scope_post } from '../models/Body_write_session_scope_by_refresh_token_access_tokens_specific__ref_tok__scope_post';
 import type { PasswordAccessTokenCreating } from '../models/PasswordAccessTokenCreating';
 import type { RevokingAccessTokenRequest } from '../models/RevokingAccessTokenRequest';
 import type { RevokingCompleted } from '../models/RevokingCompleted';
@@ -77,6 +78,39 @@ export class SessionsService {
                 'ref_tok': refTok,
             },
             errors: {
+                404: `Not Found`,
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Write Session Scope By Refresh Token
+     * Grant or remove specific scope item for a session.
+     *
+     * | Requires `behalf` scope | Itself | Other Session |
+     * | ----------------------- | ------ | ------------- |
+     * | Disable                 | No     | Yes           |
+     * | Enable                  | Yes    | Yes           |
+     * @param refTok
+     * @param requestBody
+     * @returns void
+     * @throws ApiError
+     */
+    public static writeSessionScopeByRefreshTokenAccessTokensSpecificRefTokScopePost(
+        refTok: string,
+        requestBody?: Body_write_session_scope_by_refresh_token_access_tokens_specific__ref_tok__scope_post,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/access-tokens/specific/{ref_tok}/scope',
+            path: {
+                'ref_tok': refTok,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: `Unauthorized`,
                 404: `Not Found`,
                 422: `Validation Error`,
             },

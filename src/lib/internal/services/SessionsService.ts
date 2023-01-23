@@ -92,6 +92,10 @@ export class SessionsService {
      * | ----------------------- | ------ | ------------- |
      * | Disable                 | No     | Yes           |
      * | Enable                  | Yes    | Yes           |
+     *
+     * Possible RESTful errors:
+     * - `notfound(ref_tok)` (HTTP 404)
+     * - `unauthorized` (HTTP 401)
      * @param refTok
      * @param requestBody
      * @returns void

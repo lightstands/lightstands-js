@@ -1,3 +1,5 @@
+import { ApiError } from './internal';
+
 export class BadStateError extends Error {
   constructor(message?: string) {
     super(message);
@@ -151,3 +153,11 @@ export type OAuth2Error = {
   readonly error_url?: string;
   readonly error_description: string;
 };
+
+export function ensureLightStandsError(e: ApiError): LightStandsErrorObject {
+  const body = e.body;
+  if (isLightStandsError(body)) {
+    return body;
+  }
+  throw e;
+}

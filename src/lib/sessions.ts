@@ -1,5 +1,6 @@
 import {
   ConditionRequiresError,
+  ensureLightStandsError,
   isLightStandsError,
   NotFoundError,
   RemoteError,
@@ -287,6 +288,59 @@ export function revokeSessionByRefreshToken(
             token_type: 'refresh_token',
             token: refreshToken,
           }),
+        ),
+      );
+    },
+    client,
+    session,
+  );
+}
+
+/**
+ * Change specific session's scope.
+ *
+ * To enable scope or disable other sessions' scope, you must have `behalf` scope.
+ * @param client
+ * @param session current session
+ * @param refreshToken target session refresh token
+ * @param patch
+ * @returns If success, this function returns nothing.
+ */
+export function patchScopeByRefreshToken(
+  client: ClientConfig,
+  session: SessionAccess,
+  refreshToken: string,
+  patch: {
+    readonly add?: readonly string[];
+    readonly remove?: readonly string[];
+  },
+): Fork<NotFoundError | UnauthorizedError, void> {
+  return ensureOpenAPIEnv(
+    () => {
+      return aeither(
+        {
+          left(l) {
+            const o = ensureLightStandsError(l);
+            const e = o.errors;
+            if (e['unauthorized']) {
+              return new UnauthorizedError(e['unauthorized']);
+            } else if (e['notfound(ref_tok)']) {
+              return new NotFoundError('ref_tok', e['notfound(ref_tok)']);
+            }
+            throw l;
+          },
+          right() {
+            return undefined;
+          },
+        },
+        wrapOpenAPI(
+          SessionsService.writeSessionScopeByRefreshTokenAccessTokensSpecificRefTokScopePost(
+            refreshToken,
+            {
+              add: patch.add ? Array.from(patch.add) : undefined,
+              rm: patch.remove ? Array.from(patch.remove) : undefined,
+            },
+          ),
         ),
       );
     },

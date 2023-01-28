@@ -101,7 +101,7 @@ export function internalPublicSettingsAdapter(
 export function date2DateTime(d: Date): DateTime {
   return {
     year: d.getUTCFullYear(),
-    month: d.getUTCMonth(),
+    month: d.getUTCMonth() + 1,
     day: d.getUTCDate(),
     hour: d.getUTCHours(),
     second: d.getUTCSeconds(),

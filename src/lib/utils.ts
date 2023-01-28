@@ -1,4 +1,6 @@
-import { BadStateError, OAuth2Error } from './errors';
+import { AxiosError } from 'axios';
+
+import { BadStateError, NetworkError, OAuth2Error } from './errors';
 import { aeither, Either, Fork, Left, Right, wrap } from './fpcore';
 import {
   ApiError,
@@ -111,6 +113,8 @@ export function date2DateTime(d: Date): DateTime {
 /** Setting environment for generated code.
  * Since the generated code uses a global variable for the configuration, we could not ensure,
  * after the first promise resolved in callback, if the value will keep the same.
+ *
+ * Note: this function will throw {@link NetworkError} when {@link AxiosError} catched and no response in it.
  * @param callback
  * @param client
  * @param session
@@ -123,7 +127,16 @@ export async function ensureOpenAPIEnv<R>(
 ): Promise<R> {
   OpenAPI.BASE = client.endpointBase;
   OpenAPI.TOKEN = session?.accessToken;
-  return await callback();
+  try {
+    return await callback();
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (!e.response) {
+        throw new NetworkError(e.message, e.cause, e.toJSON);
+      }
+    }
+    throw e;
+  }
 }
 
 export function internalPublicFeedAdapter(o: InternalPublicFeed): PublicFeed {

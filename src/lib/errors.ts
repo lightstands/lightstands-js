@@ -1,5 +1,17 @@
 import { ApiError } from './internal';
 
+export class NetworkError extends Error {
+  readonly cause?: Error;
+  readonly extra?: unknown;
+  constructor(message?: string, cause?: Error, extra?: unknown) {
+    super(message);
+
+    this.name = 'NetworkError';
+    this.cause = cause;
+    this.extra = extra;
+  }
+}
+
 export class BadStateError extends Error {
   constructor(message?: string) {
     super(message);

@@ -75,7 +75,7 @@ export async function makeAuthCodeFlowUrl(
   client: ClientConfig,
   request: OAuth2AuthCodeFlowRequest,
 ): Promise<URL> {
-  const url = new URL('oauth2/~authorize', client.endpointBase);
+  const url = new URL('./oauth2/~authorize', client.endpointBase);
   const search = url.searchParams;
   search.set('response_type', 'code');
   search.set('client_id', client.clientId);

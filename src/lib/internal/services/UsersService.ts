@@ -85,7 +85,7 @@ export class UsersService {
      * - email address
      *
      * Possible RESTful Errors:
-     * - `scopenotcovered(user.read)`, `403`
+     * - `scopenotcovered(user.read)` or `forbidden`, `403`
      * - `notfound(userid)`, `404`
      * @param userid
      * @returns UserPrivateInformation Successful Response
@@ -152,6 +152,9 @@ export class UsersService {
      * Elements in `tag` and `untag` should be post refs, non-exists refs will be sliently ignored.
      *
      * Requires "tag.write" scope.
+     *
+     * Possible RESTful errors:
+     * - `unauthorised` (HTTP 401)
      * @param userid
      * @param requestBody
      * @returns void

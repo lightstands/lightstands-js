@@ -8,8 +8,10 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AccessTokenCreated } from './models/AccessTokenCreated';
 export type { AccessTokenResult } from './models/AccessTokenResult';
-export type { APIResBase } from './models/APIResBase';
 export type { APIResErrBase } from './models/APIResErrBase';
+export type { AppConfiguration } from './models/AppConfiguration';
+export type { AppListChunk } from './models/AppListChunk';
+export type { AppRecipe } from './models/AppRecipe';
 export type { AuthorizationCodeResponse } from './models/AuthorizationCodeResponse';
 export type { Body_oauth2_exchange_access_token_oauth2__token_post } from './models/Body_oauth2_exchange_access_token_oauth2__token_post';
 export type { Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch } from './models/Body_patch_post_tags_feeds__feed_url_blake3__posts__post_id_blake3__tags_of__userid___patch';

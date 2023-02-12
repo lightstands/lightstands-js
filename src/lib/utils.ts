@@ -1,7 +1,17 @@
 import { AxiosError } from 'axios';
 
-import { BadStateError, NetworkError, OAuth2Error } from './errors';
+import {
+  BadFormatError,
+  BadStateError,
+  ForbiddenError,
+  isLightStandsError,
+  NetworkError,
+  OAuth2Error,
+  RemoteError,
+  UnauthorizedError,
+} from './errors';
 import { aeither, Either, Fork, Left, Right, wrap } from './fpcore';
+import { ProgressInspectable } from './inspectCx';
 import {
   ApiError,
   CancelablePromise,
@@ -14,6 +24,7 @@ import {
   ServerPublicSettings,
   UserPrivateAccessTokenWithoutToken,
 } from './internal';
+import { countProgress } from './steams';
 import {
   AccessToken,
   App,
@@ -182,4 +193,84 @@ export function creationRequestAdapter(
     requestVerificationAt: o.request_verification_at,
     resolved: o.resolved,
   };
+}
+
+const KEYED_ERROR_REGEX = /([\S]+)\((\S+)\)/g;
+
+/**
+ * Parse error key in LightStands' error model.
+ * If the error key does not contain keys, the result keys will be empty array.
+ * @param e the error key
+ * @returns [name, keys]
+ */
+function parseKeyedError(e: string): readonly [string, readonly string[]] {
+  const match = KEYED_ERROR_REGEX.exec(e);
+  if (match) {
+    const name = match[1];
+    const keyStr = match[2];
+    const keys = keyStr.split(',').map((s) => s.trim());
+    return [name, keys];
+  } else {
+    return [e, []];
+  }
+}
+
+const ERRORS_NAME_MAPPING: Record<
+  string,
+  (msg: string, keys: readonly string[]) => RemoteError
+> = {
+  unauthorised: (message) => new UnauthorizedError(message),
+  forbidden: (msg) => new ForbiddenError(msg),
+  scopenotcovered: (msg, keys) => new ForbiddenError(msg, keys),
+  badformat: (msg, keys) => new BadFormatError(keys, msg),
+};
+
+/**
+ * Transform standard response into result.
+ * @param response the Response instance from Fetch API
+ * @param onSuccess will be called if the status code is success (>= 200 && < 300)
+ * @param onFailed will be called if a regconisable error if returned
+ * @param inspectCx inspection context, supports: progress
+ * @returns
+ */
+export async function transformStdResponse<E, R>(
+  response: Response,
+  onSuccess: (response: Response) => R | Promise<R>,
+  onFailed: (e: RemoteError) => E | Promise<E>,
+  inspectCx?: ProgressInspectable,
+): Fork<E, R> {
+  const onProgress = inspectCx?.onProgress;
+  const resp = onProgress
+    ? new Response(
+        response.body
+          ? // eslint-disable-next-line functional/no-return-void
+            countProgress(response.body, (loaded) => onProgress(loaded))
+          : undefined,
+        { headers: response.headers, status: response.status },
+      )
+    : response;
+  if (resp.status >= 200 && resp.status < 300) {
+    const ret = await onSuccess(resp);
+    return Right(ret);
+  } else {
+    const payload = await resp.json();
+    if (isLightStandsError(payload)) {
+      const errors = payload['errors'];
+      // eslint-disable-next-line functional/no-loop-statement
+      for (const k of Object.keys(errors)) {
+        const [name, keys] = parseKeyedError(k);
+        if (ERRORS_NAME_MAPPING[name]) {
+          return Left(
+            await onFailed(ERRORS_NAME_MAPPING[name](errors[k], keys)),
+          );
+        }
+      }
+      throw new RemoteError(
+        'unknown',
+        `error ${Object.keys(errors).join(', ')} is unknown`,
+      );
+    } else {
+      throw new TypeError('response is not a standard API error');
+    }
+  }
 }

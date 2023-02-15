@@ -1,6 +1,6 @@
 {
   "name": "lightstands-js",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "TypeScript/JavaScript LightStands client library",
   "typings": "build/index.d.ts",
   "main": "build/index.js",

@@ -61,14 +61,14 @@ export class NotFoundError extends RemoteError {
       typeof key === 'string'
         ? `NotFoundError(${key})`
         : typeof key === 'undefined'
-        ? 'NotFoundError'
-        : `NotFoundError${key.join(',')}`;
+          ? 'NotFoundError'
+          : `NotFoundError${key.join(',')}`;
     const keys =
       typeof key === 'string'
         ? [key]
         : typeof key === 'undefined'
-        ? undefined
-        : key;
+          ? undefined
+          : key;
     super(name, message, keys);
   }
 }

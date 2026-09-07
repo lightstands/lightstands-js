@@ -1,4 +1,9 @@
-import { ForbiddenError, NotFoundError, UnauthorizedError } from './errors';
+import {
+  BadFormatError,
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+} from './errors';
 import { dfetch } from './fetch';
 import { aeither, Fork } from './fpcore';
 import { AbortInspectable, ProgressInspectable } from './inspectCx';
@@ -92,7 +97,7 @@ export async function listAppsByOwner(
     }
   }
   const response = await dfetch(endpoint, {
-    method: 'get',
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${session.accessToken}`,
     },
@@ -102,7 +107,9 @@ export async function listAppsByOwner(
     response,
     async (response) => {
       const payload = await response.json();
-      return payload['chunk'] as readonly App[];
+      return (payload['chunk'] as readonly PublicApplication[]).map(
+        internalAppAdapter,
+      );
     },
     (e) => {
       if (e instanceof UnauthorizedError || e instanceof ForbiddenError) {
@@ -136,7 +143,7 @@ export async function newApp(
     redirect_uri: receipt.redirectUri?.toString(),
   };
   const response = await dfetch(endpoint, {
-    method: 'put',
+    method: 'PUT',
     json: args,
     headers: {
       Authorization: `Bearer ${session.accessToken}`,
@@ -151,6 +158,66 @@ export async function newApp(
     },
     (e) => {
       if (e instanceof UnauthorizedError || e instanceof ForbiddenError) {
+        return e;
+      } else {
+        throw e;
+      }
+    },
+  );
+}
+
+export type AppConfiguration = {
+  readonly name: string;
+  readonly redirectUri: string;
+  readonly scope: string;
+};
+
+/**
+ * Configure application.
+ * @param client
+ * @param session
+ * @param clientId
+ * @param config
+ * @param inspectCx inspection context, supports: abort
+ * @returns
+ */
+export async function configureApp(
+  client: ClientConfig,
+  session: SessionAccess,
+  clientId: string,
+  config: Partial<AppConfiguration>,
+  inspectCx?: AbortInspectable,
+) {
+  const endpoint = new URL(
+    `./apps/by-client-id/${clientId}`,
+    client.endpointBase,
+  );
+  const args = {
+    name: config.name,
+    redirect_uri: config.redirectUri,
+    scope: config.scope,
+  };
+  const response = await dfetch(endpoint, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+    },
+    json: args,
+    signal: inspectCx?.abortSignal,
+  });
+  return transformStdResponse(
+    response,
+    async (response) => {
+      const payload = await response.json();
+      return internalAppAdapter(payload);
+    },
+    (e) => {
+      if (
+        e instanceof BadFormatError ||
+        e instanceof UnauthorizedError ||
+        e instanceof ForbiddenError ||
+        e instanceof NotFoundError
+      ) {
         return e;
       } else {
         throw e;

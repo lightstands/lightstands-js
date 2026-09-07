@@ -14,7 +14,7 @@ export type DFetchOpts = {
  * New parameters:
  * - "json": set `Content-Type` to `application/json` and the value json string as `body`
  *
- * This wrapped function will throw {@link NetworkError} instead of {@link TypeError}.
+ * This wrapper will throw {@link NetworkError} instead of {@link TypeError}.
  * @param input
  * @param init
  * @returns

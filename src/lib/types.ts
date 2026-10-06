@@ -129,9 +129,7 @@ export type SupportedCaptchaResponse = {
 };
 
 export type VerificationFailureReason =
-  | 'unsupported'
-  | 'not-required'
-  | 'throttled';
+  'unsupported' | 'not-required' | 'throttled';
 
 export type CreationVerificationStatus = {
   readonly request: CreationRequest;
